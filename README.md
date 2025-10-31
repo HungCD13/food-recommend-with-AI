@@ -1,1 +1,1 @@
-# food-suggestion
+# food-recommend-with-AI
