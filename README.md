@@ -22,8 +22,3 @@ Người dùng chỉ cần nhập các nguyên liệu (ví dụ: “trứng, mì
 - **React.js (Vite)** → Giao diện web hiện đại  
 - **TailwindCSS** → Thiết kế nhanh, responsive  
 - **Axios** → Gửi request đến API backend  
-
----
-
-## 📂 Cấu trúc thư mục dự kiến
-
