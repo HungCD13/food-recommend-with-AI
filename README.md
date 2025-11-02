@@ -1,4 +1,3 @@
-# food-recommend-with-AI
 # 🍳 FoodGPT – Gợi ý món ăn từ nguyên liệu có sẵn
 
 ## 🧠 Giới thiệu
