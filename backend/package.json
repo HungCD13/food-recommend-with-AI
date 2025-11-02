@@ -1,0 +1,38 @@
+{
+  "type": "module",
+  "name": "food-recommend-with-ai",
+  "version": "1.0.0",
+  "description": "Gợi ý món ăn từ nguyên liệu có sẵn bằng GPT API",
+  "main": "sever.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/HungCD13/food-recommend-with-AI.git"
+  },
+  "keywords": [
+    "food",
+    "ai",
+    "gpt",
+    "recipe"
+  ],
+  "author": "HungCD13",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/HungCD13/food-recommend-with-AI/issues"
+  },
+  "homepage": "https://github.com/HungCD13/food-recommend-with-AI#readme",
+  "dependencies": {
+    "axios": "^1.13.1",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
+    "express": "^5.1.0",
+    "mongoose": "^8.19.2",
+    "openai": "^6.7.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10"
+  }
+}
