@@ -7,8 +7,8 @@
     <!-- 
         primary meta tag
     -->
-    <title>Saved recipes - Cook.io</title>
-    <meta name="title" content="Cook.io - Cooking made easy.">
+    <title>Register - Cook.io</title>
+    <meta name="title" content="Register - Cook.io">
     
     <!-- 
         favicon
@@ -41,7 +41,6 @@
     -->
     <script src="./assets/js/global.js" type="module"> </script>
     <script src="./assets/js/auth.js" type="module"> </script>
-    <script src="./assets/js/saved_recipes.js" type="module"> </script>
 </head>
 
 <body>
@@ -76,33 +75,12 @@
             <span class="material-symbols-outlined dark-icon" aria-hidden="true">dark_mode</span>        
         </button>
 
-        <div class="header-auth" id="headerAuth">
-            <a href="./login.html" class="btn btn-secondary has-icon" id="loginBtn">
-                <span class="material-symbols-outlined" aria-hidden="true">login</span>
-                <span class="span">Login</span>
-            </a>
-            <a href="./register.html" class="btn btn-primary has-icon" id="registerBtn">
-                <span class="material-symbols-outlined" aria-hidden="true">person_add</span>
-                <span class="span">Sign Up</span>
-            </a>
-        </div>
-
-        <button class="btn btn-secondary has-icon header-logout hidden" id="logoutBtn">
-            <span class="material-symbols-outlined" aria-hidden="true">logout</span>
-            <span class="span">Logout</span>
-        </button>
-
-        <a href="./saved-recipes.html" class="btn btn-primary has-icon" id="savedRecipesBtn">
+        <a href="./saved-recipes.html" class="btn btn-primary has-icon">
             <span class="material-symbols-outlined" aria-hidden="true">book</span>
 
             <span class="span">Saved Recipes</span>
         </a>
     </header>
-
-
-
-
-
 
     <!--
         MOBILE NAV
@@ -133,7 +111,7 @@
             </li>
 
             <li class="nav-item">
-                <a href="./saved-recipes.html" class="nav-link" aria-current="true">
+                <a href="./saved-recipes.html" class="nav-link">
                     <span class="item-icon">
                         <span class="material-symbols-outlined" aria-hidden="true">book</span>
                     </span>
@@ -147,13 +125,89 @@
     </nav>
 
     <main>
-        <article class="article container saved-recipe-page" data-saved-recipe-container></article>
+        <section class="auth-section">
+            <div class="container">
+                <div class="auth-card">
+                    <h1 class="display-small auth-title">Create Account</h1>
+                    <p class="body-medium auth-subtitle">Sign up to start cooking with Cook.io</p>
+
+                    <form class="auth-form" id="registerForm">
+                        <div class="input-outlined">
+                            <label for="registerName" class="label">Full Name</label>
+                            <input 
+                                type="text" 
+                                id="registerName" 
+                                class="input-field" 
+                                placeholder="Enter your full name"
+                                required
+                                autocomplete="name"
+                            >
+                        </div>
+
+                        <div class="input-outlined">
+                            <label for="registerEmail" class="label">Email</label>
+                            <input 
+                                type="email" 
+                                id="registerEmail" 
+                                class="input-field" 
+                                placeholder="Enter your email"
+                                required
+                                autocomplete="email"
+                            >
+                        </div>
+
+                        <div class="input-outlined">
+                            <label for="registerPassword" class="label">Password</label>
+                            <input 
+                                type="password" 
+                                id="registerPassword" 
+                                class="input-field" 
+                                placeholder="Create a password"
+                                required
+                                autocomplete="new-password"
+                                minlength="6"
+                            >
+                        </div>
+
+                        <div class="input-outlined">
+                            <label for="registerConfirmPassword" class="label">Confirm Password</label>
+                            <input 
+                                type="password" 
+                                id="registerConfirmPassword" 
+                                class="input-field" 
+                                placeholder="Confirm your password"
+                                required
+                                autocomplete="new-password"
+                            >
+                        </div>
+
+                        <label class="checkbox-wrapper">
+                            <input type="checkbox" id="agreeTerms" class="checkbox" required>
+                            <span class="body-medium">I agree to the <a href="#" class="auth-link">Terms and Conditions</a></span>
+                        </label>
+
+                        <button type="submit" class="btn btn-primary auth-submit">
+                            <span>Sign Up</span>
+                        </button>
+                    </form>
+
+                    <div class="auth-divider">
+                        <span class="body-medium">or</span>
+                    </div>
+
+                    <p class="body-medium auth-footer">
+                        Already have an account? 
+                        <a href="./login.html" class="auth-link">Sign in</a>
+                    </p>
+
+                    <div class="auth-error" id="registerError" style="display: none;">
+                        <span class="material-symbols-outlined" aria-hidden="true">error</span>
+                        <p class="body-medium" id="registerErrorText"></p>
+                    </div>
+                </div>
+            </div>
+        </section>
     </main>
-
-
-
-
-
 
     <!-- 
         FOOTER
@@ -177,3 +231,4 @@
 
 </body>
 </html>
+

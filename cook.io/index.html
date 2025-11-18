@@ -40,6 +40,7 @@
         custom js
     -->
     <script src="./assets/js/global.js" type="module"> </script>
+    <script src="./assets/js/auth.js" type="module"> </script>
     <script src="./assets/js/home.js" type="module"> </script>
 </head>
 
@@ -51,7 +52,7 @@
 
     <header class="header" data-header>
 
-        <a href="/" class="logo">
+        <a href="./index.html" class="logo">
             <img src="./assets/images/logo-light.svg" width="156" height="32" alt="Cook.io" class="logo-light">
             <img src="./assets/images/logo-dark.svg" width="156" height="32" alt="Cook.io" class="logo-dark">
         </a>
@@ -60,7 +61,7 @@
             <ul class="navbar-list">
 
                 <li>
-                    <a href="/" class="navbar-link title-small has-state active">Home</a>
+                    <a href="./index.html" class="navbar-link title-small has-state active">Home</a>
                 </li>
 
                 <li>
@@ -75,7 +76,23 @@
             <span class="material-symbols-outlined dark-icon" aria-hidden="true">dark_mode</span>        
         </button>
 
-        <a href="./saved-recipes.html" class=" btn btn-primary has-icon">
+        <div class="header-auth" id="headerAuth">
+            <a href="./login.html" class="btn btn-secondary has-icon" id="loginBtn">
+                <span class="material-symbols-outlined" aria-hidden="true">login</span>
+                <span class="span">Login</span>
+            </a>
+            <a href="./register.html" class="btn btn-primary has-icon" id="registerBtn">
+                <span class="material-symbols-outlined" aria-hidden="true">person_add</span>
+                <span class="span">Sign Up</span>
+            </a>
+        </div>
+
+        <button class="btn btn-secondary has-icon header-logout hidden" id="logoutBtn">
+            <span class="material-symbols-outlined" aria-hidden="true">logout</span>
+            <span class="span">Logout</span>
+        </button>
+
+        <a href="./saved-recipes.html" class="btn btn-primary has-icon" id="savedRecipesBtn">
             <span class="material-symbols-outlined" aria-hidden="true">book</span>
 
             <span class="span">Saved Recipes</span>
@@ -669,7 +686,7 @@
 
         <p class="copyright body-medium">Copyright 2025 HUYANDHUNG</p>
 
-        <a href="/" class="logo">
+        <a href="./index.html" class="logo">
             <img src="./assets/images/logo-light.svg" width="156" height="32" alt="Cook.io" class="logo-light">
 
             <img src="./assets/images/logo-dark.svg" width="156" height="32" alt="Cook.io" class="logo-dark">

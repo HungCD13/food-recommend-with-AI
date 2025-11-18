@@ -13,9 +13,9 @@ const /**{String}  */ TYPE = "public";
 
 export const fetchData = async function (queries, successCallback) {
     const /**{String}  */ query = queries?.join("&")
-     .replace(/,/g, "=")
-     .replace(/ /g, "%20")
-     .replace(/\+/g, "%28");
+        .replace(/,/g, "=")
+        .replace(/ /g, "%20")
+        .replace(/\+/g, "%28");
     const /**{String} */ url = `${ACCESS_POINT}?app_id=${APP_ID}&app_key=${API_KEY}&type=${TYPE}${query ? `&${query}` : ""}`;
 
     const /**{Object} */ response = await fetch(url);
