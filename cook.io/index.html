@@ -4,699 +4,1195 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- 
-        primary meta tag
-    -->
-    <title>Cook.io - Cooking made easy.</title>
-    <meta name="title" content="Cook.io - Cooking made easy.">
-    
-    <!-- 
-        favicon
-    -->
-    <link rel="shortcut icon" href="./favicon.svg" type="image/svg+xml">
-    <!--
-        theme js 
-    -->
-    <script src="./assets/js/theme.js"></script>
-    <!--
-        google fonts
-    -->
+    <title>Cook.io | AI Recipe Generator</title>
+
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500&family=DM+Serif+Display&display=swap"
-    rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Poppins:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
 
-    <!--
-        material icon
-    -->
-    <link rel="stylesheet"
-    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0..1,0" />
-    <!--
-        custom css
-    -->
-    <link rel="stylesheet" href="./assets/css/style.css">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <!--
-        custom js
-    -->
-    <script src="./assets/js/global.js" type="module"> </script>
-    <script src="./assets/js/auth.js" type="module"> </script>
-    <script src="./assets/js/home.js" type="module"> </script>
+    <style>
+        /* --- CSS VARIABLES & RESET --- */
+        :root {
+            --primary: #ff6b6b;
+            /* Warm Coral */
+            --primary-dark: #ee5253;
+            --secondary: #feca57;
+            /* Soft Mustard */
+            --dark: #2d3436;
+            --light: #f7f1e3;
+            --white: #ffffff;
+            --glass-bg: rgba(255, 255, 255, 0.15);
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --shadow-light: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+            --shadow-neumorphic: 9px 9px 16px rgba(163, 177, 198, 0.3), -9px -9px 16px rgba(255, 255, 255, 0.5);
+            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--light);
+            color: var(--dark);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        h1,
+        h2,
+        h3,
+        h4 {
+            font-family: 'Playfair Display', serif;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        ul {
+            list-style: none;
+        }
+
+        /* --- UTILITIES --- */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 30px;
+            border-radius: 50px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: var(--white);
+            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(255, 107, 107, 0.6);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+        }
+
+        .btn-outline:hover {
+            background: var(--primary);
+            color: var(--white);
+        }
+
+        /* --- NAVIGATION --- */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 20px 0;
+            z-index: 1000;
+            transition: var(--transition);
+        }
+
+        nav.scrolled {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            padding: 15px 0;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .nav-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+        }
+
+        .nav-links a {
+            font-weight: 500;
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            background: var(--primary);
+            bottom: -5px;
+            left: 0;
+            transition: var(--transition);
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        /* --- HERO SECTION --- */
+        .hero {
+            height: 100vh;
+            width: 100%;
+            background-image: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url('https://images.unsplash.com/photo-1543353071-87d364289d3e?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            /* Parallax effect */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: var(--white);
+            position: relative;
+        }
+
+        .hero-content {
+            max-width: 800px;
+            padding: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            animation: fadeInUp 1s ease-out;
+        }
+
+        .hero h1 {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            font-weight: 300;
+        }
+
+        /* --- GENERATOR SECTION --- */
+        .generator-section {
+            padding: 80px 0;
+            position: relative;
+            background: linear-gradient(to bottom, var(--light), #ffffff);
+        }
+
+        .input-wrapper {
+            background: var(--white);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: var(--shadow-neumorphic);
+            max-width: 800px;
+            margin: -100px auto 50px;
+            /* Overlap hero */
+            position: relative;
+            z-index: 10;
+            text-align: center;
+        }
+
+        .input-group {
+            position: relative;
+            margin-bottom: 25px;
+        }
+
+        .ingredient-input {
+            width: 100%;
+            padding: 20px;
+            font-size: 1.1rem;
+            border: 2px solid #eee;
+            border-radius: 15px;
+            outline: none;
+            font-family: 'Poppins', sans-serif;
+            transition: var(--transition);
+            background: #fafafa;
+        }
+
+        .ingredient-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(255, 107, 107, 0.1);
+            background: #fff;
+        }
+
+        .actions {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        /* --- LOADING ANIMATION --- */
+        .loader-container {
+            display: none;
+            /* Hidden by default */
+            flex-direction: column;
+            align-items: center;
+            margin: 40px 0;
+        }
+
+        .pan-loader {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .loader {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+
+        .pan {
+            width: 50px;
+            height: 50px;
+            background: var(--dark);
+            border-radius: 0 0 20px 20px;
+            position: absolute;
+            bottom: 0;
+            left: 15px;
+            animation: panFlip 2s infinite ease-in-out;
+        }
+
+        .handle {
+            width: 35px;
+            height: 8px;
+            background: var(--dark);
+            position: absolute;
+            bottom: 40px;
+            left: 55px;
+            border-radius: 5px;
+            transform: rotate(-35deg);
+            transform-origin: bottom left;
+            animation: panFlipHandle 2s infinite ease-in-out;
+        }
+
+        .food-particle {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: var(--primary);
+            border-radius: 50%;
+            top: 40%;
+            left: 50%;
+            opacity: 0;
+            animation: sizzle 2s infinite ease-in-out;
+        }
+
+        @keyframes panFlip {
+
+            0%,
+            100% {
+                transform: rotate(0deg);
+            }
+
+            50% {
+                transform: rotate(-15deg) translateY(-5px);
+            }
+        }
+
+        @keyframes panFlipHandle {
+
+            0%,
+            100% {
+                transform: rotate(-35deg);
+            }
+
+            50% {
+                transform: rotate(-50deg) translateY(-5px);
+            }
+        }
+
+        @keyframes sizzle {
+            0% {
+                transform: translate(0, 0) scale(1);
+                opacity: 0;
+            }
+
+            30% {
+                opacity: 1;
+            }
+
+            80% {
+                transform: translate(10px, -40px) scale(0);
+                opacity: 0;
+            }
+        }
+
+        /* --- RESULT CARD --- */
+        .result-container {
+            max-width: 900px;
+            margin: 0 auto;
+            display: none;
+            /* Hidden by default */
+            animation: slideUp 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .recipe-card {
+            background: var(--white);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: var(--shadow-light);
+            display: grid;
+            grid-template-columns: 1fr 1.5fr;
+        }
+
+        .recipe-img {
+            height: 100%;
+            min-height: 400px;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+
+        .recipe-details {
+            padding: 40px;
+        }
+
+        .recipe-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 20px;
+        }
+
+        .recipe-title {
+            font-size: 2rem;
+            color: var(--dark);
+            margin-bottom: 10px;
+        }
+
+        .recipe-meta {
+            display: flex;
+            gap: 20px;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .meta-item i {
+            color: var(--secondary);
+        }
+
+        .recipe-body h4 {
+            color: var(--primary);
+            margin: 20px 0 10px;
+            font-size: 1.2rem;
+        }
+
+        .ingredients-list,
+        .instructions-list {
+            padding-left: 20px;
+        }
+
+        .ingredients-list li {
+            margin-bottom: 8px;
+            position: relative;
+        }
+
+        .instructions-list li {
+            margin-bottom: 12px;
+        }
+
+        /* Checkbox style for ingredients */
+        .ingredients-list li::before {
+            content: '\f00c';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            color: var(--primary);
+            margin-right: 10px;
+            font-size: 0.8rem;
+        }
+
+        .save-btn {
+            background: transparent;
+            border: none;
+            color: #ccc;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .save-btn:hover,
+        .save-btn.saved {
+            color: var(--primary);
+            transform: scale(1.1);
+        }
+
+        /* --- SAVED RECIPES (SIDEBAR STYLE) --- */
+        .saved-section {
+            padding: 60px 0;
+            background: #fff;
+        }
+
+        .saved-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .mini-card {
+            background: var(--white);
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            padding: 20px;
+            border: 1px solid #eee;
+            transition: var(--transition);
+            cursor: pointer;
+            position: relative;
+        }
+
+        .mini-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            border-color: var(--primary);
+        }
+
+        .delete-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            color: #999;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .delete-btn:hover {
+            color: var(--primary-dark);
+        }
+
+        /* --- FOOTER --- */
+        footer {
+            background: var(--dark);
+            color: var(--light);
+            padding: 50px 0 20px;
+            text-align: center;
+        }
+
+        .footer-content h2 {
+            margin-bottom: 10px;
+        }
+
+        .footer-links {
+            margin: 20px 0;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .footer-links a:hover {
+            color: var(--primary);
+        }
+
+        /* --- CHAT SECTION --- */
+        .chat-section {
+            max-width: 900px;
+            margin: 40px auto 0;
+            background: var(--white);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: var(--shadow-light);
+            display: none;
+            /* Hidden initially */
+        }
+
+        .chat-history {
+            max-height: 300px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .chat-message {
+            padding: 10px 15px;
+            border-radius: 15px;
+            max-width: 80%;
+            font-size: 0.95rem;
+        }
+
+        .chat-message.user {
+            background: var(--primary);
+            color: white;
+            align-self: flex-end;
+            border-bottom-right-radius: 2px;
+        }
+
+        .chat-message.ai {
+            background: #f1f1f1;
+            color: var(--dark);
+            align-self: flex-start;
+            border-bottom-left-radius: 2px;
+        }
+
+        .chat-input-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        .chat-input {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #eee;
+            border-radius: 50px;
+            outline: none;
+            transition: var(--transition);
+        }
+
+        .chat-input:focus {
+            border-color: var(--primary);
+        }
+
+        /* --- ANIMATIONS --- */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(100px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* --- RESPONSIVE --- */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .recipe-card {
+                grid-template-columns: 1fr;
+            }
+
+            .recipe-img {
+                height: 250px;
+                min-height: 250px;
+            }
+
+            .input-wrapper {
+                padding: 25px;
+                margin-top: -50px;
+                width: 90%;
+                margin-left: auto;
+                margin-right: auto;
+            }
+        }
+    </style>
 </head>
 
 <body>
 
-    <!--
-       #Header
-    -->
-
-    <header class="header" data-header>
-
-        <a href="./index.html" class="logo">
-            <img src="./assets/images/logo-light.svg" width="156" height="32" alt="Cook.io" class="logo-light">
-            <img src="./assets/images/logo-dark.svg" width="156" height="32" alt="Cook.io" class="logo-dark">
-        </a>
-
-        <nav class="navbar">
-            <ul class="navbar-list">
-
-                <li>
-                    <a href="./index.html" class="navbar-link title-small has-state active">Home</a>
-                </li>
-
-                <li>
-                    <a href="./recipes.html" class="navbar-link title-small has-state ">Recipes</a>
-                </li>
-            </ul>
-        </nav>
-
-        <button class="icon-btn theme-switch has-state" aria-pressed="false" aria-label="Toggle light and dark theme" data-theme-btn>
-            <span class="material-symbols-outlined light-icon" aria-hidden="true">light_mode</span>
-
-            <span class="material-symbols-outlined dark-icon" aria-hidden="true">dark_mode</span>        
-        </button>
-
-        <div class="header-auth" id="headerAuth">
-            <a href="./login.html" class="btn btn-secondary has-icon" id="loginBtn">
-                <span class="material-symbols-outlined" aria-hidden="true">login</span>
-                <span class="span">Login</span>
+    <!-- NAVIGATION -->
+    <nav id="navbar">
+        <div class="container nav-content">
+            <a href="#" class="logo">
+                <i class="fas fa-utensils"></i> Cook.io
             </a>
-            <a href="./register.html" class="btn btn-primary has-icon" id="registerBtn">
-                <span class="material-symbols-outlined" aria-hidden="true">person_add</span>
-                <span class="span">Sign Up</span>
-            </a>
+            <div class="nav-links">
+                <a href="#generator">Generate</a>
+                <a href="#saved">Saved</a>
+            </div>
         </div>
-
-        <button class="btn btn-secondary has-icon header-logout hidden" id="logoutBtn">
-            <span class="material-symbols-outlined" aria-hidden="true">logout</span>
-            <span class="span">Logout</span>
-        </button>
-
-        <a href="./saved-recipes.html" class="btn btn-primary has-icon" id="savedRecipesBtn">
-            <span class="material-symbols-outlined" aria-hidden="true">book</span>
-
-            <span class="span">Saved Recipes</span>
-        </a>
-    </header>
-
-
-
-
-
-
-    <!--
-        MOBILE NAV
-    -->
-
-    <nav class="mobile-nav" aria-label="primary">
-        <ul class="nav-list">
-            <li class="nav-item">
-                <a href="./recipes.html" class="nav-link">
-                    <span class="item-icon">
-                        <span class="material-symbols-outlined" aria-hidden="true">lunch_dining</span>
-                    </span>
-
-                    <span class="label-medium">Recipes</span>
-
-                </a>
-            </li>
-
-            <li class="nav-item">
-                <a href="#" class="nav-link" aria-current="true">
-                    <span class="item-icon">
-                        <span class="material-symbols-outlined" aria-hidden="true">home</span>
-                    </span>
-
-                    <span class="label-medium">Home</span>
-
-                </a>
-            </li>
-
-            <li class="nav-item">
-                <a href="./saved-recipes.html" class="nav-link">
-                    <span class="item-icon">
-                        <span class="material-symbols-outlined" aria-hidden="true">book</span>
-                    </span>
-
-                    <span class="label-medium">Saved</span>
-
-                </a>
-            </li>
-
-        </ul>
     </nav>
 
-    <main>
-        <article>
-            <!--
-                HERO
-            -->
+    <!-- HERO SECTION -->
+    <header class="hero">
+        <div class="hero-content">
+            <h1>Turn Ingredients into Art</h1>
+            <p>Don't know what to cook? Enter your leftovers or available ingredients, and let our AI Chef craft the
+                perfect recipe for you.</p>
+            <a href="#generator" class="btn btn-primary">Start Cooking</a>
+        </div>
+    </header>
 
-            <section class="hero" aria-label="banner">
+    <!-- MAIN APP SECTION -->
+    <main id="generator" class="generator-section">
+        <div class="container">
 
-                <div class="banner-card">
+            <!-- Input Area -->
+            <div class="input-wrapper">
+                <h2>What's in your kitchen?</h2>
+                <p style="color: #888; margin-bottom: 20px;">Enter ingredients separated by commas (e.g., chicken,
+                    lemon, garlic)</p>
 
-                    <h1 class="display-large">Your desired dish?</h1>
-
-                    <div class="search-wrapper" data-search-form>
-                        <span class="material-symbols-outlined leading-icon" aria-hidden="true">local_dining</span>
-
-                        <input type="search" name="search" aria-label="Search recipes" placeholder="Search recipes..." class="search-field body-medium" data-search-field>
-                        <button class="search-submit" aria-label="Submit" data-search-btn>
-                            <span class="material-symbols-outlined" aria-hidden="true">search</span>
-                        </button>
-                    </div>
-
-                    <p class="label-medium">
-                        Search any recipe e.g: burger, pizza, sandwich, toast.
-                    </p>
-
-                </div>
-            </section>
-
-
-
-
-
-            <!--
-                TAB
-            -->
-            
-            <section class="section tab">
-                <div class="container">
-
-                    <div class="tab-list" data-tab-list role="tablist" aria-label="Meal type">
-
-                        <button class="tab-btn title-small" role="tab" id="tab-1" tabindex="0" aria-controls="panel-1" aria-selected="true" data-tab-btn>
-                            Breakfast
-                        </button>
-
-                        <button class="tab-btn title-small" role="tab" id="tab-2" tabindex="-1" aria-controls="panel-2" aria-selected="false" data-tab-btn>
-                            Lunch
-                        </button>
-
-                        <button class="tab-btn title-small" role="tab" id="tab-3" tabindex="-1" aria-controls="panel-3" aria-selected="false" data-tab-btn>
-                            Dinner
-                        </button>
-
-                        <button class="tab-btn title-small" role="tab" id="tab-4" tabindex="-1" aria-controls="panel-4" aria-selected="false" data-tab-btn>
-                            Snack
-                        </button>
-
-                        <button class="tab-btn title-small" role="tab" id="tab-5" tabindex="-1" aria-controls="panel-5" aria-selected="false" data-tab-btn>
-                            Teatime
-                        </button>
-
-                    </div>
-
-                    <div class="tab-panel" role="tabpanel" id="panel-1" aria-labelledby="tab-1" tabindex="0" data-tab-panel></div>
-
-                    <div class="tab-panel" role="tabpanel" id="panel-2" aria-labelledby="tab-2" tabindex="0" data-tab-panel hidden>Lunch</div>
-                    <div class="tab-panel" role="tabpanel" id="panel-3" aria-labelledby="tab-3" tabindex="0" data-tab-panel hidden>Dinner</div>
-                    <div class="tab-panel" role="tabpanel" id="panel-4" aria-labelledby="tab-4" tabindex="0" data-tab-panel hidden>Snack</div>
-                    <div class="tab-panel" role="tabpanel" id="panel-5" aria-labelledby="tab-5" tabindex="0" data-tab-panel hidden>Teatime</div>
-
+                <div class="input-group">
+                    <input type="text" id="ingredients" class="ingredient-input" placeholder="Type ingredients here...">
                 </div>
 
-            </section>
-
-
-
-
-
-
-
-
-
-            <!--
-                RECIPE SLIDER
-            -->
-            
-            <section class="section slider-section" aria-labelledby="slider-label-1" data-slider-section></section>
-
-
-
-            <!--
-                RECIPE SLIDER
-            -->
-            
-            <section class="section slider-section" aria-labelledby="slider-label-1" data-slider-section>
-
-                <div class="container">
-
-                    <h2 class="section-title headline-small" id="slider-label-1">
-                        Lastest French Recipes
-                    </h2>
-
-                    <div class="slider">
-
-                        <ul class="slider-wrapper" data-slider-wrapper>
-
-                            <li class="slider-item">
-                                <div class="card">
-                                        <figure class="card-media img-holder">
-                                            <img src="./assets/images/recipe.jpg" width="200" height="200" loading="lazy" alt="Recipe name" class="img-cover">
-                                        </figure>
-
-                                        <div class="card-body">
-                                            <h3 class="title-small">
-                                                <a href="./detail.html" class="card-link">Recipe name </a>
-                                            </h3>
-
-                                            <div class="meta-wrapper">
-                                                <div class="meta-item">
-                                                    <span class="material-symbols-outlined" aria-hidden="true">schedule</span>
-
-                                                    <span class="label-medium">2 minutes</span>
-                                                </div>
-
-                                                <button class="icon-btn has-state removed" aria-label="Add to saved recipes">
-                                                    <span class="material-symbols-outlined bookmark-add" aria-hidden="true">bookmark_add</span>
-                                                    
-                                                    <span class="material-symbols-outlined bookmark" aria-hidden="true">bookmark</span>
-                                                </button>
-                                            </div>
-                                        </div>
-                                </div>
-                                <div class="card">
-                                        <figure class="card-media img-holder">
-                                            <img src="./assets/images/recipe.jpg" width="200" height="200" loading="lazy" alt="Recipe name" class="img-cover">
-                                        </figure>
-
-                                        <div class="card-body">
-                                            <h3 class="title-small">
-                                                <a href="./detail.html" class="card-link">Recipe name </a>
-                                            </h3>
-
-                                            <div class="meta-wrapper">
-                                                <div class="meta-item">
-                                                    <span class="material-symbols-outlined" aria-hidden="true">schedule</span>
-
-                                                    <span class="label-medium">2 minutes</span>
-                                                </div>
-
-                                                <button class="icon-btn has-state removed" aria-label="Add to saved recipes">
-                                                    <span class="material-symbols-outlined bookmark-add" aria-hidden="true">bookmark_add</span>
-                                                    
-                                                    <span class="material-symbols-outlined bookmark" aria-hidden="true">bookmark</span>
-                                                </button>
-                                            </div>
-                                        </div>
-                                </div>
-                                <div class="card">
-                                        <figure class="card-media img-holder">
-                                            <img src="./assets/images/recipe.jpg" width="200" height="200" loading="lazy" alt="Recipe name" class="img-cover">
-                                        </figure>
-
-                                        <div class="card-body">
-                                            <h3 class="title-small">
-                                                <a href="./detail.html" class="card-link">Recipe name </a>
-                                            </h3>
-
-                                            <div class="meta-wrapper">
-                                                <div class="meta-item">
-                                                    <span class="material-symbols-outlined" aria-hidden="true">schedule</span>
-
-                                                    <span class="label-medium">2 minutes</span>
-                                                </div>
-
-                                                <button class="icon-btn has-state removed" aria-label="Add to saved recipes">
-                                                    <span class="material-symbols-outlined bookmark-add" aria-hidden="true">bookmark_add</span>
-                                                    
-                                                    <span class="material-symbols-outlined bookmark" aria-hidden="true">bookmark</span>
-                                                </button>
-                                            </div>
-                                        </div>
-                                </div>
-                            </li>
-
-                            <li class="slider-item">
-                                <div class="card">
-                                        <figure class="card-media img-holder">
-                                            <img src="./assets/images/recipe.jpg" width="200" height="200" loading="lazy" alt="Recipe name" class="img-cover">
-                                        </figure>
-
-                                        <div class="card-body">
-                                            <h3 class="title-small">
-                                                <a href="./detail.html" class="card-link">Recipe name </a>
-                                            </h3>
-
-                                            <div class="meta-wrapper">
-                                                <div class="meta-item">
-                                                    <span class="material-symbols-outlined" aria-hidden="true">schedule</span>
-
-                                                    <span class="label-medium">2 minutes</span>
-                                                </div>
-
-                                                <button class="icon-btn has-state removed" aria-label="Add to saved recipes">
-                                                    <span class="material-symbols-outlined bookmark-add" aria-hidden="true">bookmark_add</span>
-                                                    
-                                                    <span class="material-symbols-outlined bookmark" aria-hidden="true">bookmark</span>
-                                                </button>
-                                            </div>
-                                        </div>
-                                </div>
-                                <div class="card">
-                                        <figure class="card-media img-holder">
-                                            <img src="./assets/images/recipe.jpg" width="200" height="200" loading="lazy" alt="Recipe name" class="img-cover">
-                                        </figure>
-
-                                        <div class="card-body">
-                                            <h3 class="title-small">
-                                                <a href="./detail.html" class="card-link">Recipe name </a>
-                                            </h3>
-
-                                            <div class="meta-wrapper">
-                                                <div class="meta-item">
-                                                    <span class="material-symbols-outlined" aria-hidden="true">schedule</span>
-
-                                                    <span class="label-medium">2 minutes</span>
-                                                </div>
-
-                                                <button class="icon-btn has-state removed" aria-label="Add to saved recipes">
-                                                    <span class="material-symbols-outlined bookmark-add" aria-hidden="true">bookmark_add</span>
-                                                    
-                                                    <span class="material-symbols-outlined bookmark" aria-hidden="true">bookmark</span>
-                                                </button>
-                                            </div>
-                                        </div>
-                                </div>
-                                <div class="card">
-                                        <figure class="card-media img-holder">
-                                            <img src="./assets/images/recipe.jpg" width="200" height="200" loading="lazy" alt="Recipe name" class="img-cover">
-                                        </figure>
-
-                                        <div class="card-body">
-                                            <h3 class="title-small">
-                                                <a href="./detail.html" class="card-link">Recipe name </a>
-                                            </h3>
-
-                                            <div class="meta-wrapper">
-                                                <div class="meta-item">
-                                                    <span class="material-symbols-outlined" aria-hidden="true">schedule</span>
-
-                                                    <span class="label-medium">2 minutes</span>
-                                                </div>
-
-                                                <button class="icon-btn has-state removed" aria-label="Add to saved recipes">
-                                                    <span class="material-symbols-outlined bookmark-add" aria-hidden="true">bookmark_add</span>
-                                                    
-                                                    <span class="material-symbols-outlined bookmark" aria-hidden="true">bookmark</span>
-                                                </button>
-                                            </div>
-                                        </div>
-                                </div>
-                            </li>
-
-                            <li class="slider-item">
-                                <div class="card">
-                                        <figure class="card-media img-holder">
-                                            <img src="./assets/images/recipe.jpg" width="200" height="200" loading="lazy" alt="Recipe name" class="img-cover">
-                                        </figure>
-
-                                        <div class="card-body">
-                                            <h3 class="title-small">
-                                                <a href="./detail.html" class="card-link">Recipe name </a>
-                                            </h3>
-
-                                            <div class="meta-wrapper">
-                                                <div class="meta-item">
-                                                    <span class="material-symbols-outlined" aria-hidden="true">schedule</span>
-
-                                                    <span class="label-medium">2 minutes</span>
-                                                </div>
-
-                                                <button class="icon-btn has-state removed" aria-label="Add to saved recipes">
-                                                    <span class="material-symbols-outlined bookmark-add" aria-hidden="true">bookmark_add</span>
-                                                    
-                                                    <span class="material-symbols-outlined bookmark" aria-hidden="true">bookmark</span>
-                                                </button>
-                                            </div>
-                                        </div>
-                                </div>
-                                <div class="card">
-                                        <figure class="card-media img-holder">
-                                            <img src="./assets/images/recipe.jpg" width="200" height="200" loading="lazy" alt="Recipe name" class="img-cover">
-                                        </figure>
-
-                                        <div class="card-body">
-                                            <h3 class="title-small">
-                                                <a href="./detail.html" class="card-link">Recipe name </a>
-                                            </h3>
-
-                                            <div class="meta-wrapper">
-                                                <div class="meta-item">
-                                                    <span class="material-symbols-outlined" aria-hidden="true">schedule</span>
-
-                                                    <span class="label-medium">2 minutes</span>
-                                                </div>
-
-                                                <button class="icon-btn has-state removed" aria-label="Add to saved recipes">
-                                                    <span class="material-symbols-outlined bookmark-add" aria-hidden="true">bookmark_add</span>
-                                                    
-                                                    <span class="material-symbols-outlined bookmark" aria-hidden="true">bookmark</span>
-                                                </button>
-                                            </div>
-                                        </div>
-                                </div>
-                                <div class="card">
-                                        <figure class="card-media img-holder">
-                                            <img src="./assets/images/recipe.jpg" width="200" height="200" loading="lazy" alt="Recipe name" class="img-cover">
-                                        </figure>
-
-                                        <div class="card-body">
-                                            <h3 class="title-small">
-                                                <a href="./detail.html" class="card-link">Recipe name </a>
-                                            </h3>
-
-                                            <div class="meta-wrapper">
-                                                <div class="meta-item">
-                                                    <span class="material-symbols-outlined" aria-hidden="true">schedule</span>
-
-                                                    <span class="label-medium">2 minutes</span>
-                                                </div>
-
-                                                <button class="icon-btn has-state removed" aria-label="Add to saved recipes">
-                                                    <span class="material-symbols-outlined bookmark-add" aria-hidden="true">bookmark_add</span>
-                                                    
-                                                    <span class="material-symbols-outlined bookmark" aria-hidden="true">bookmark</span>
-                                                </button>
-                                            </div>
-                                        </div>
-                                </div>
-                            </li>
-
-                            <li class="slider-item">
-                                <div class="card">
-                                        <figure class="card-media img-holder">
-                                            <img src="./assets/images/recipe.jpg" width="200" height="200" loading="lazy" alt="Recipe name" class="img-cover">
-                                        </figure>
-
-                                        <div class="card-body">
-                                            <h3 class="title-small">
-                                                <a href="./detail.html" class="card-link">Recipe name </a>
-                                            </h3>
-
-                                            <div class="meta-wrapper">
-                                                <div class="meta-item">
-                                                    <span class="material-symbols-outlined" aria-hidden="true">schedule</span>
-
-                                                    <span class="label-medium">2 minutes</span>
-                                                </div>
-
-                                                <button class="icon-btn has-state removed" aria-label="Add to saved recipes">
-                                                    <span class="material-symbols-outlined bookmark-add" aria-hidden="true">bookmark_add</span>
-                                                    
-                                                    <span class="material-symbols-outlined bookmark" aria-hidden="true">bookmark</span>
-                                                </button>
-                                            </div>
-                                        </div>
-                                </div>
-                                <div class="card">
-                                        <figure class="card-media img-holder">
-                                            <img src="./assets/images/recipe.jpg" width="200" height="200" loading="lazy" alt="Recipe name" class="img-cover">
-                                        </figure>
-
-                                        <div class="card-body">
-                                            <h3 class="title-small">
-                                                <a href="./detail.html" class="card-link">Recipe name </a>
-                                            </h3>
-
-                                            <div class="meta-wrapper">
-                                                <div class="meta-item">
-                                                    <span class="material-symbols-outlined" aria-hidden="true">schedule</span>
-
-                                                    <span class="label-medium">2 minutes</span>
-                                                </div>
-
-                                                <button class="icon-btn has-state removed" aria-label="Add to saved recipes">
-                                                    <span class="material-symbols-outlined bookmark-add" aria-hidden="true">bookmark_add</span>
-                                                    
-                                                    <span class="material-symbols-outlined bookmark" aria-hidden="true">bookmark</span>
-                                                </button>
-                                            </div>
-                                        </div>
-                                </div>
-                                <div class="card">
-                                        <figure class="card-media img-holder">
-                                            <img src="./assets/images/recipe.jpg" width="200" height="200" loading="lazy" alt="Recipe name" class="img-cover">
-                                        </figure>
-
-                                        <div class="card-body">
-                                            <h3 class="title-small">
-                                                <a href="./detail.html" class="card-link">Recipe name </a>
-                                            </h3>
-
-                                            <div class="meta-wrapper">
-                                                <div class="meta-item">
-                                                    <span class="material-symbols-outlined" aria-hidden="true">schedule</span>
-
-                                                    <span class="label-medium">2 minutes</span>
-                                                </div>
-
-                                                <button class="icon-btn has-state removed" aria-label="Add to saved recipes">
-                                                    <span class="material-symbols-outlined bookmark-add" aria-hidden="true">bookmark_add</span>
-                                                    
-                                                    <span class="material-symbols-outlined bookmark" aria-hidden="true">bookmark</span>
-                                                </button>
-                                            </div>
-                                        </div>
-                                </div>
-                            </li>
-
-                            <li class="slider-item" data-slider-item>
-                                <a href="./recipes.html" class="load-more-card has-state">
-                                    <span class="label-large">Show more</span>
-
-                                    <span class="material-symbols-outlined" aria-hidden="true">navigate_next</span>
-                                </a>
-                            </li>
-
-
-                        </ul>
-
-                    </div>
-
+                <div class="actions">
+                    <button id="generateBtn" class="btn btn-primary">
+                        <i class="fas fa-magic"></i> Generate Recipe
+                    </button>
+                    <button id="surpriseBtn" class="btn btn-outline">
+                        <i class="fas fa-random"></i> Surprise Me
+                    </button>
+                    <button id="clearBtn" class="btn" style="color: #999;">Clear</button>
                 </div>
+            </div>
 
-            </section>
-
-
-
-            <!--
-                TAGS
-            -->
-
-            <section class="section tag" aria-labelledby="tag-label">
-                <div class="container">
-                    <h2 class="section-title display-small" id="tag-label">Choose your health preference.</h2>
-
-                    <p class="body-medium section-text">
-                        Choosing your health preference is an important step towards achieving a healthier lifestyle.
-                    </p>
-
-                    <div class="tag-list">
-                        <a href="./recipes.html?health=wheat-free" class="badge-btn body-medium has-state">Wheat-free</a>
-
-                        <a href="./recipes.html?health=vegetarian" class="badge-btn body-medium has-state">Vegetarian</a>
-
-                        <a href="./recipes.html?health=vegan" class="badge-btn body-medium has-state">Vegan</a>
-
-                        <a href="./recipes.html?health=tree-nut-free" class="badge-btn body-medium has-state">Tree-nut-free</a>
-
-                        <a href="./recipes.html?health=sulfite-free" class="badge-btn body-medium has-state">Sulfite-free</a>
-
-                        <a href="./recipes.html?health=sugar-conscious" class="badge-btn body-medium has-state">Sugar-conscious</a>
-
-                        <a href="./recipes.html?health=soy-free" class="badge-btn body-medium has-state">Soy-free</a>
-
-                        <a href="./recipes.html?health=shellfish-free" class="badge-btn body-medium has-state">Shellfish-free</a>
-
-                        <a href="./recipes.html?health=sesame-free" class="badge-btn body-medium has-state">Sesame-free</a>
-
-                        <a href="./recipes.html?health=red-meat-free" class="badge-btn body-medium has-state">Red-meat-free</a>
-
-                        <a href="./recipes.html?health=pork-free" class="badge-btn body-medium has-state">Pork-free</a>
-                        
-                        <a href="./recipes.html?health=pecatarian" class="badge-btn body-medium has-state">Pecatarian</a>
-
-                        <a href="./recipes.html?health=peanut-free" class="badge-btn body-medium has-state">Peanut-free</a>
-
-                        <a href="./recipes.html?health=No-oil-added" class="badge-btn body-medium has-state">No-oil-added</a>
-
-                        <a href="./recipes.html?health=mustard-free" class="badge-btn body-medium has-state">Mustard-free</a>
-
-                        <a href="./recipes.html?health=mollusk-free" class="badge-btn body-medium has-state">Mollusk-free</a>
-
-                        <a href="./recipes.html?health=Mediterranean" class="badge-btn body-medium has-state">Mediterranean</a>
-
-                        <a href="./recipes.html?health=lupine-free" class="badge-btn body-medium has-state">Lupine-free</a>
-
-                        <a href="./recipes.html?health=low-sugar" class="badge-btn body-medium has-state">Low-sugar</a>
-
-                        <a href="./recipes.html?health=low-potassium" class="badge-btn body-medium has-state">Low-potassium</a>
-
-                        <a href="./recipes.html?health=kosher" class="badge-btn body-medium has-state">Kosher</a>
-
-                        <a href="./recipes.html?health=kidney-friendly" class="badge-btn body-medium has-state">Kidney-friendly</a>
-
-                        <a href="./recipes.html?health=keto-friendly" class="badge-btn body-medium has-state">Keto-friendly</a>
-
-                        <a href="./recipes.html?health=immuno-supportive" class="badge-btn body-medium has-state">Immuno-supportive</a>
-
-                        <a href="./recipes.html?health=gluten-free" class="badge-btn body-medium has-state">Gluten-free</a>
-
-                        <a href="./recipes.html?health=fodmap-free" class="badge-btn body-medium has-state">Fodmap-free</a>
-
-                        <a href="./recipes.html?health=fish-free" class="badge-btn body-medium has-state">Fish-free</a>
-
-                        <a href="./recipes.html?health=egg-free" class="badge-btn body-medium has-state">Egg-free</a>
-
-                        <a href="./recipes.html?health=DASH" class="badge-btn body-medium has-state">DASH</a>
-
-                        <a href="./recipes.html?health=dairy-free" class="badge-btn body-medium has-state">Dairy-free</a>
-
-                        <a href="./recipes.html?health=crustacean-free" class="badge-btn body-medium has-state">crustacean-free</a>
-
-                        <a href="./recipes.html?health=celery-free" class="badge-btn body-medium has-state">Celery-free</a>
-
-                        <a href="./recipes.html?health=alcohol-free" class="badge-btn body-medium has-state">Alcohol-free</a>
-
-                        <a href="./recipes.html?health=alcohol-cocktail" class="badge-btn body-medium has-state">Alcohol-cocktail</a>
-
-                        
+            <!-- Loader -->
+            <div id="loader" class="loader-container">
+                <div class="pan-loader">
+                    <div class="loader">
+                        <div class="pan"></div>
+                        <div class="handle"></div>
+                        <div class="food-particle"></div>
+                        <div class="food-particle" style="animation-delay: 0.5s; left: 60%;"></div>
+                        <div class="food-particle" style="animation-delay: 1s; left: 40%;"></div>
                     </div>
-
                 </div>
-            </section>
+                <h3>Chef AI is thinking...</h3>
+            </div>
 
-        </article>
+            <!-- Error Message -->
+            <div id="error-msg" style="display: none; color: var(--primary); text-align: center; margin-top: 20px;">
+                <i class="fas fa-exclamation-circle"></i> Please enter at least one ingredient.
+            </div>
+
+            <!-- Recipe Result -->
+            <div id="result" class="result-container">
+                <!-- Content injected via JS -->
+            </div>
+
+            <!-- Chef Chat Section (New) -->
+            <div id="chat-interface" class="chat-section">
+                <h3 style="margin-bottom: 15px;"><i class="fas fa-comments"></i> Ask Chef Gemini ✨</h3>
+                <div id="chat-history" class="chat-history">
+                    <div class="chat-message ai">Hello! I generated this recipe for you. Do you have any questions about
+                        substitutions or steps?</div>
+                </div>
+                <div class="chat-input-group">
+                    <input type="text" id="chat-input" class="chat-input"
+                        placeholder="Ask about wine pairings, sides, or tips...">
+                    <button id="chat-send" class="btn btn-primary"><i class="fas fa-paper-plane"></i></button>
+                </div>
+            </div>
+
+        </div>
     </main>
 
+    <!-- SAVED RECIPES -->
+    <section id="saved" class="saved-section">
+        <div class="container">
+            <h2 style="text-align: center; margin-bottom: 10px;">Your Recipe Book</h2>
+            <p style="text-align: center; color: #888;">Recipes you've saved for later.</p>
+            <div id="saved-grid" class="saved-grid">
+                <!-- Saved items injected via JS -->
+            </div>
+        </div>
+    </section>
 
-
-
-
-
-    <!-- 
-        FOOTER
-    -->
-    
-    <footer class="footer">
-
-        <p class="copyright body-medium">Copyright 2025 HUYANDHUNG</p>
-
-        <a href="./index.html" class="logo">
-            <img src="./assets/images/logo-light.svg" width="156" height="32" alt="Cook.io" class="logo-light">
-
-            <img src="./assets/images/logo-dark.svg" width="156" height="32" alt="Cook.io" class="logo-dark">
-        </a>
-
-        <a href="https://www.edamam.com/" target="_blank" class="edamam">
-            <img src="./assets/images/edamam.svg" width="200" height="40" loading="lazy" alt="edamam free recipe api">
-        </a>
-
+    <!-- FOOTER -->
+    <footer>
+        <div class="container footer-content">
+            <div class="logo" style="justify-content: center; margin-bottom: 20px;">
+                <i class="fas fa-utensils"></i> Cook.io
+            </div>
+            <p>Powered by Google Gemini & Imagen</p>
+            <div class="footer-links">
+                <a href="#"><i class="fab fa-instagram"></i></a>
+                <a href="#"><i class="fab fa-twitter"></i></a>
+                <a href="#"><i class="fab fa-facebook"></i></a>
+            </div>
+            <p>&copy; 2023 Cook.io All Rights Reserved.</p>
+        </div>
     </footer>
 
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        // --- CONFIGURATION ---
+        const apiKey = ""; // API Key injected by environment
+
+        // --- STATE MANAGEMENT ---
+        let currentRecipe = null;
+        let savedRecipes = JSON.parse(localStorage.getItem('cookio_saved')) || [];
+        let isGenerating = false;
+
+        // --- DOM ELEMENTS ---
+        const input = document.getElementById('ingredients');
+        const generateBtn = document.getElementById('generateBtn');
+        const surpriseBtn = document.getElementById('surpriseBtn');
+        const clearBtn = document.getElementById('clearBtn');
+        const loader = document.getElementById('loader');
+        const resultContainer = document.getElementById('result');
+        const errorMsg = document.getElementById('error-msg');
+        const savedGrid = document.getElementById('saved-grid');
+        const navbar = document.getElementById('navbar');
+        const chatInterface = document.getElementById('chat-interface');
+        const chatHistory = document.getElementById('chat-history');
+        const chatInput = document.getElementById('chat-input');
+        const chatSend = document.getElementById('chat-send');
+
+        // --- EVENT LISTENERS ---
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) navbar.classList.add('scrolled');
+            else navbar.classList.remove('scrolled');
+        });
+
+        generateBtn.addEventListener('click', () => handleGenerate(false));
+
+        input.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') handleGenerate(false);
+        });
+
+        surpriseBtn.addEventListener('click', () => {
+            const randomIngredients = ["Something spicy", "Vegetarian dinner", "Sweet dessert", "Healthy breakfast"];
+            const randomPick = randomIngredients[Math.floor(Math.random() * randomIngredients.length)];
+            input.value = randomPick;
+            handleGenerate(false);
+        });
+
+        clearBtn.addEventListener('click', () => {
+            input.value = '';
+            resultContainer.style.display = 'none';
+            chatInterface.style.display = 'none';
+            errorMsg.style.display = 'none';
+            currentRecipe = null;
+        });
+
+        chatSend.addEventListener('click', sendChatMessage);
+        chatInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') sendChatMessage();
+        });
+
+        // --- CORE FUNCTIONS ---
+
+        async function handleGenerate(isRandom = false) {
+            const query = input.value.trim();
+            if (!query) {
+                errorMsg.style.display = 'block';
+                shakeInput();
+                return;
+            }
+
+            if (isGenerating) return;
+            isGenerating = true;
+
+            errorMsg.style.display = 'none';
+            resultContainer.style.display = 'none';
+            chatInterface.style.display = 'none';
+            loader.style.display = 'flex';
+            generateBtn.disabled = true;
+
+            try {
+                // 1. Generate Recipe Text with Gemini Flash
+                const recipePrompt = `You are a professional chef. Create a detailed, unique recipe using these ingredients or theme: "${query}". 
+                Return ONLY raw JSON (no markdown formatting, no backticks) with this exact structure: 
+                { "title": "string", "time": "string (e.g. 30 mins)", "calories": "string (e.g. 500 kcal)", "ingredients": ["string"], "instructions": ["string"], "imagePrompt": "string (visual description of the dish for an AI image generator)" }`;
+
+                const recipeData = await callGeminiText(recipePrompt, true); // true = expects JSON
+
+                // 2. Generate Image with Imagen 4 (concurrently if possible, but we need the prompt first)
+                updateLoaderText("Plating up your dish...");
+                const imageUrl = await callImagen(recipeData.imagePrompt || `Delicious ${recipeData.title} food photography`);
+
+                currentRecipe = {
+                    id: Date.now(),
+                    ...recipeData,
+                    image: imageUrl
+                };
+
+                renderRecipeCard(currentRecipe);
+                scrollToResult();
+
+                // Reset Chat
+                chatHistory.innerHTML = '<div class="chat-message ai">Hello! I generated this recipe for you. Do you have any questions about substitutions or steps?</div>';
+                chatInterface.style.display = 'block';
+
+            } catch (error) {
+                console.error(error);
+                alert("Chef AI got a bit confused. Please try again!");
+            } finally {
+                loader.style.display = 'none';
+                generateBtn.disabled = false;
+                isGenerating = false;
+                updateLoaderText("Chef AI is thinking...");
+            }
+        }
+
+        async function sendChatMessage() {
+            const msg = chatInput.value.trim();
+            if (!msg || !currentRecipe) return;
+
+            // Add user message
+            addChatBubble(msg, 'user');
+            chatInput.value = '';
+
+            // Loading bubble
+            const loadingId = addChatBubble("Thinking...", 'ai');
+
+            try {
+                const context = `I am currently looking at a recipe for ${currentRecipe.title}. Ingredients: ${currentRecipe.ingredients.join(', ')}.`;
+                const prompt = `${context} User asks: "${msg}". Keep answer concise and helpful.`;
+
+                const response = await callGeminiText(prompt, false);
+
+                // Remove loading, add real response
+                document.getElementById(loadingId).remove();
+                addChatBubble(response, 'ai');
+            } catch (err) {
+                document.getElementById(loadingId).innerText = "Sorry, I couldn't answer that.";
+            }
+        }
+
+        // --- API HELPERS ---
+
+        async function callGeminiText(prompt, isJson = false) {
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+
+            const payload = {
+                contents: [{ parts: [{ text: prompt }] }]
+            };
+
+            if (isJson) {
+                payload.generationConfig = { responseMimeType: "application/json" };
+            }
+
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            if (!response.ok) throw new Error("Gemini API Error");
+
+            const data = await response.json();
+            const text = data.candidates[0].content.parts[0].text;
+
+            return isJson ? JSON.parse(text) : text;
+        }
+
+        async function callImagen(prompt) {
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/imagen-4.0-generate-001:predict?key=${apiKey}`;
+            const payload = {
+                instances: [{ prompt: prompt + ", high quality food photography, 4k, delicious, photorealistic" }],
+                parameters: { sampleCount: 1 }
+            };
+
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            if (!response.ok) {
+                console.warn("Imagen failed, using fallback");
+                return "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=800&q=80";
+            }
+
+            const data = await response.json();
+            return `data:image/png;base64,${data.predictions[0].bytesBase64Encoded}`;
+        }
+
+        async function generateTTS(text) {
+            const btn = document.getElementById('tts-btn');
+            const icon = btn.querySelector('i');
+            const originalIcon = icon.className;
+
+            try {
+                icon.className = "fas fa-spinner fa-spin";
+
+                const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent?key=${apiKey}`;
+                const payload = {
+                    contents: [{ parts: [{ text: text }] }],
+                    generationConfig: {
+                        responseModalities: ["AUDIO"],
+                        speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: "Aoede" } } }
+                    }
+                };
+
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const data = await response.json();
+                const base64Audio = data.candidates[0].content.parts[0].inlineData.data;
+
+                // Decode Base64 to ArrayBuffer
+                const binaryString = window.atob(base64Audio);
+                const len = binaryString.length;
+                const bytes = new Uint8Array(len);
+                for (let i = 0; i < len; i++) {
+                    bytes[i] = binaryString.charCodeAt(i);
+                }
+
+                // Convert PCM to WAV
+                const wavBytes = pcmToWav(bytes.buffer, 24000); // Gemini TTS is usually 24kHz
+                const blob = new Blob([wavBytes], { type: 'audio/wav' });
+                const audioUrl = URL.createObjectURL(blob);
+
+                const audio = new Audio(audioUrl);
+                audio.play();
+
+                icon.className = "fas fa-volume-up";
+
+            } catch (e) {
+                console.error("TTS Error", e);
+                alert("Could not generate audio.");
+                icon.className = originalIcon;
+            } finally {
+                setTimeout(() => icon.className = "fas fa-volume-up", 2000);
+            }
+        }
+
+        // --- PCM TO WAV UTILITY ---
+        function pcmToWav(pcmData, sampleRate) {
+            const numChannels = 1;
+            const byteRate = sampleRate * numChannels * 2;
+            const blockAlign = numChannels * 2;
+            const dataSize = pcmData.byteLength;
+            const buffer = new ArrayBuffer(44 + dataSize);
+            const view = new DataView(buffer);
+
+            // RIFF chunk
+            writeString(view, 0, 'RIFF');
+            view.setUint32(4, 36 + dataSize, true);
+            writeString(view, 8, 'WAVE');
+
+            // fmt sub-chunk
+            writeString(view, 12, 'fmt ');
+            view.setUint32(16, 16, true);
+            view.setUint16(20, 1, true); // PCM format
+            view.setUint16(22, numChannels, true);
+            view.setUint32(24, sampleRate, true);
+            view.setUint32(28, byteRate, true);
+            view.setUint16(32, blockAlign, true);
+            view.setUint16(34, 16, true); // bits per sample
+
+            // data sub-chunk
+            writeString(view, 36, 'data');
+            view.setUint32(40, dataSize, true);
+
+            // Write PCM data
+            const pcmBytes = new Uint8Array(pcmData);
+            const wavBytes = new Uint8Array(buffer, 44);
+            wavBytes.set(pcmBytes);
+
+            return buffer;
+        }
+
+        function writeString(view, offset, string) {
+            for (let i = 0; i < string.length; i++) {
+                view.setUint8(offset + i, string.charCodeAt(i));
+            }
+        }
+
+        // --- RENDERING UI ---
+
+        function renderRecipeCard(recipe) {
+            const isSaved = savedRecipes.some(r => r.id === recipe.id);
+            const heartClass = isSaved ? 'fas' : 'far';
+            const savedClass = isSaved ? 'saved' : '';
+
+            // Prepare text for TTS
+            const ttsText = `Here is the recipe for ${recipe.title}. Ingredients: ${recipe.ingredients.join(', ')}. Instructions: ${recipe.instructions.join('. ')}`;
+            // Escape quotes for the onclick handler
+            const safeTTSText = ttsText.replace(/'/g, "\\'").replace(/"/g, '&quot;');
+
+            const html = `
+                <div class="recipe-card">
+                    <div class="recipe-img" style="background-image: url('${recipe.image}')">
+                        <div style="position:absolute; bottom:10px; right:10px; background:rgba(0,0,0,0.5); color:white; padding:5px 10px; border-radius:10px; font-size:0.7rem;">
+                            <i class="fas fa-magic"></i> AI Generated Image
+                        </div>
+                    </div>
+                    <div class="recipe-details">
+                        <div class="recipe-header">
+                            <div>
+                                <h3 class="recipe-title">${recipe.title}</h3>
+                                <div class="recipe-meta">
+                                    <div class="meta-item"><i class="far fa-clock"></i> ${recipe.time}</div>
+                                    <div class="meta-item"><i class="fas fa-fire"></i> ${recipe.calories}</div>
+                                </div>
+                            </div>
+                            <div style="display:flex; gap:10px;">
+                                <button onclick="generateTTS('${safeTTSText}')" class="save-btn" id="tts-btn" title="Listen to Recipe">
+                                    <i class="fas fa-volume-up"></i>
+                                </button>
+                                <button onclick="toggleSave(${recipe.id})" class="save-btn ${savedClass}" id="saveBtn-${recipe.id}">
+                                    <i class="${heartClass} fa-heart"></i>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="recipe-body">
+                            <h4>Ingredients</h4>
+                            <ul class="ingredients-list">
+                                ${recipe.ingredients.map(ing => `<li>${ing}</li>`).join('')}
+                            </ul>
+                            
+                            <h4>Instructions</h4>
+                            <ol class="instructions-list">
+                                ${recipe.instructions.map(step => `<li>${step}</li>`).join('')}
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            resultContainer.innerHTML = html;
+            resultContainer.style.display = 'block';
+        }
+
+        function addChatBubble(text, type) {
+            const id = 'msg-' + Date.now();
+            const div = document.createElement('div');
+            div.id = id;
+            div.className = `chat-message ${type}`;
+            div.innerText = text;
+            chatHistory.appendChild(div);
+            chatHistory.scrollTop = chatHistory.scrollHeight;
+            return id;
+        }
+
+        function updateLoaderText(text) {
+            const h3 = loader.querySelector('h3');
+            if (h3) h3.innerText = text;
+        }
+
+        function toggleSave(id) {
+            const recipeToSave = currentRecipe;
+            const index = savedRecipes.findIndex(r => r.id === id);
+            const btn = document.getElementById(`saveBtn-${id}`);
+            const icon = btn.querySelector('i');
+
+            if (index === -1) {
+                savedRecipes.push(recipeToSave);
+                btn.classList.add('saved');
+                icon.classList.remove('far');
+                icon.classList.add('fas');
+            } else {
+                savedRecipes.splice(index, 1);
+                btn.classList.remove('saved');
+                icon.classList.remove('fas');
+                icon.classList.add('far');
+            }
+            updateLocalStorage();
+            renderSavedList();
+        }
+
+        function removeSaved(id) {
+            savedRecipes = savedRecipes.filter(r => r.id !== id);
+            updateLocalStorage();
+            renderSavedList();
+            if (currentRecipe && currentRecipe.id === id) {
+                const mainBtn = document.getElementById(`saveBtn-${id}`);
+                if (mainBtn) {
+                    mainBtn.classList.remove('saved');
+                    mainBtn.querySelector('i').classList.remove('fas');
+                    mainBtn.querySelector('i').classList.add('far');
+                }
+            }
+        }
+
+        function updateLocalStorage() {
+            localStorage.setItem('cookio_saved', JSON.stringify(savedRecipes));
+        }
+
+        function renderSavedList() {
+            if (savedRecipes.length === 0) {
+                savedGrid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #ccc;">No saved recipes yet.</p>';
+                return;
+            }
+
+            savedGrid.innerHTML = savedRecipes.map(recipe => `
+                <div class="mini-card">
+                    <div class="delete-btn" onclick="removeSaved(${recipe.id})">
+                        <i class="fas fa-trash"></i>
+                    </div>
+                    <h4 style="margin-bottom: 5px;">${recipe.title}</h4>
+                    <p style="font-size: 0.8rem; color: #888; margin-bottom: 10px;">${recipe.time} • ${recipe.calories}</p>
+                    <div style="height: 120px; background: url('${recipe.image}') center/cover; border-radius: 10px;"></div>
+                </div>
+            `).join('');
+        }
+
+        function shakeInput() {
+            input.style.borderColor = 'var(--primary)';
+            input.style.animation = 'shake 0.5s';
+            setTimeout(() => {
+                input.style.animation = '';
+            }, 500);
+        }
+
+        function scrollToResult() {
+            resultContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        // Add shake keyframes dynamically
+        const styleSheet = document.createElement("style");
+        styleSheet.innerText = `
+            @keyframes shake {
+                0% { transform: translateX(0); }
+                25% { transform: translateX(-5px); }
+                50% { transform: translateX(5px); }
+                75% { transform: translateX(-5px); }
+                100% { transform: translateX(0); }
+            }
+        `;
+        document.head.appendChild(styleSheet);
+
+        // Initial Render
+        renderSavedList();
+
+    </script>
 </body>
+
 </html>

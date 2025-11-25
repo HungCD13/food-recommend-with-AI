@@ -1,9 +1,12 @@
 import express from "express";
-import { recommendFood } from "../controllers/recipeController.js";
+import { recommendFood, getHistory } from "../controllers/recipeController.js";
 
 const router = express.Router();
 
-// POST /api/recommend
-router.post("/recommend", recommendFood);
+// Gọi GPT API thật
+router.post("/generate", recommendFood);
+
+// Lấy lịch sử theo user
+router.get("/history/:id", getHistory);
 
 export default router;
