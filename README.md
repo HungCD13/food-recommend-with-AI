@@ -14,7 +14,7 @@ Người dùng chỉ cần nhập các nguyên liệu (ví dụ: “trứng, mì
 ### ⚙️ Backend:
 - **Node.js + Express** → Xây dựng API server  
 - **OpenAI GPT API** → Xử lý ngôn ngữ tự nhiên (gợi ý món ăn)  
-- **MongoDB + Atlas Vector Search** → Lưu dataset món ăn + hỗ trợ RAG  
+- **MongoDB ** → Lưu dữ liệu món ăn   
 - **LangChain** → Quản lý quy trình truy xuất và sinh câu trả lời từ GPT  
 
 ### 💻 Frontend:
