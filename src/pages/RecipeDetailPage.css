@@ -1,0 +1,285 @@
+/* Import font chữ giống trong ảnh (Playfair Display cho tiêu đề) */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Poppins:wght@300;400;500;600&display=swap');
+
+:root {
+  --bg-color: #f8f9fa; /* Nền trang sáng */
+  --card-bg: #ffffff;
+  --text-main: #2c3e50;
+  --text-light: #64748b;
+  --accent-blue: #38bdf8;
+  --accent-purple: #6366f1;
+  --divider-color: #eee;
+}
+
+.recipe-detail-page {
+  min-height: 100vh;
+  background-color: var(--bg-color);
+  padding: 40px 20px;
+  color: var(--text-main);
+  font-family: "Poppins", sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+/* Nút quay lại */
+.back-btn {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: white;
+  border: 1px solid #ddd;
+  padding: 8px 16px;
+  border-radius: 20px;
+  color: var(--text-light);
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.3s ease;
+  z-index: 10;
+}
+
+.back-btn:hover {
+  background: var(--text-main);
+  color: white;
+  border-color: var(--text-main);
+}
+
+/* --- RECIPE CARD --- */
+.recipe-card {
+  width: 100%;
+  max-width: 1000px;
+  background: var(--card-bg);
+  border-radius: 30px;
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08); /* Bóng đổ mềm mại */
+  display: flow-root;
+  flex-direction: row; /* Chia đôi màn hình: Ảnh trái - Nội dung phải */
+  height: auto;
+}
+
+/* --- PHẦN ẢNH (BÊN TRÁI) --- */
+.recipe-image {
+  flex: 0 0 45%; /* Chiếm 45% chiều rộng */
+  position: relative;
+  overflow: hidden;
+  padding: 20px; /* Tạo khoảng hở như ảnh */
+}
+
+.recipe-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 20px; /* Bo tròn ảnh bên trong */
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
+
+/* --- PHẦN NỘI DUNG (BÊN PHẢI) --- */
+.recipe-content {
+  flex: 1;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Tiêu đề */
+.recipe-title {
+  font-family: "Playfair Display", serif;
+  font-size: 3rem; /* Chữ to như ảnh */
+  font-weight: 700;
+  text-align: center;
+  color: var(--text-main);
+  margin-bottom: 20px;
+  line-height: 1.2;
+}
+
+/* Thông tin Meta (Thời gian, Calo, Ngày) */
+.recipe-meta {
+  display: flex;
+  justify-content: center;
+  gap: 25px;
+  font-size: 14px;
+  color: var(--text-light);
+  margin-bottom: 30px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--divider-color);
+}
+
+.recipe-meta span {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* --- BỐ CỤC 2 CỘT CHO NGUYÊN LIỆU & CÁCH LÀM --- */
+/* Mẹo: Sử dụng Grid để chia section nguyên liệu và cách làm sang 2 bên */
+/* Lưu ý: CSS này giả định section đầu tiên là Nguyên liệu, thứ 2 là Cách làm */
+
+.recipe-section {
+  margin-bottom: 20px;
+}
+
+/* Layout chung cho nội dung chính */
+.recipe-content {
+  /* Ghi đè display flex ở trên để dùng Grid cho phần nội dung bên dưới title */
+  display: grid; 
+  grid-template-columns: 1fr 1fr; /* Chia cột 50-50 */
+  grid-template-areas: 
+    "title title"
+    "meta meta"
+    "ingredients instructions"
+    "badge badge";
+  gap: 20px;
+  align-content: start;
+}
+
+/* Gán Grid Area */
+.recipe-title { grid-area: title; }
+.recipe-meta { grid-area: meta; }
+.recipe-section:nth-of-type(1) { grid-area: ingredients; } /* Section 1: Nguyên liệu */
+.recipe-section:nth-of-type(2) { grid-area: instructions; } /* Section 2: Cách làm */
+.ai-badge { grid-area: badge; justify-self: center; margin-top: auto;}
+
+/* Style tiêu đề section (Nguyên liệu / Cách làm) */
+.recipe-section h2 {
+  font-family: "Playfair Display", serif;
+  font-size: 1.2rem;
+  margin-bottom: 15px;
+  color: var(--text-main);
+  display: inline-block;
+  position: relative;
+  padding-bottom: 5px;
+}
+
+/* Gạch chân trang trí dưới tiêu đề (giống ảnh) */
+.recipe-section:nth-of-type(1) h2::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 40px;
+  height: 3px;
+  background-color: #fca5a5; /* Màu hồng nhạt cho nguyên liệu */
+  border-radius: 2px;
+}
+
+.recipe-section:nth-of-type(2) h2::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 40px;
+  height: 3px;
+  background-color: #fda4af; /* Màu đỏ nhạt cho cách làm */
+  border-radius: 2px;
+}
+
+/* List Style */
+.recipe-section ul, 
+.recipe-section ol {
+  padding-left: 0;
+  list-style: none;
+}
+
+.recipe-section li {
+  margin-bottom: 10px;
+  font-size: 0.95rem;
+  color: var(--text-light);
+  line-height: 1.6;
+}
+
+/* Nguyên liệu: thêm gạch đầu dòng mờ */
+.recipe-section ul li {
+  padding-left: 15px;
+  position: relative;
+}
+.recipe-section ul li::before {
+  content: "•";
+  position: absolute;
+  left: 0;
+  color: #cbd5e1;
+}
+
+/* Cách làm: Số thứ tự to hơn hoặc style khác nếu muốn */
+.recipe-section ol {
+  counter-reset: step-counter;
+}
+.recipe-section ol li {
+  display: flex;
+  gap: 10px;
+}
+.recipe-section ol li::before {
+  content: counter(step-counter) ".";
+  counter-increment: step-counter;
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+/* --- BADGE AI --- */
+.ai-badge {
+  background: linear-gradient(135deg, #60a5fa, #818cf8);
+  color: white;
+  padding: 12px 30px;
+  border-radius: 50px;
+  font-size: 14px;
+  font-weight: 600;
+  box-shadow: 0 10px 20px rgba(99, 102, 241, 0.3);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 20px;
+  width: fit-content;
+}
+
+/* --- LOADING & ERROR --- */
+.recipe-loading, .recipe-error {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  background: var(--bg-color);
+  color: var(--text-main);
+}
+
+.spinner {
+  border-color: #e2e8f0;
+  border-top-color: var(--accent-blue);
+}
+
+/* --- RESPONSIVE (MOBILE) --- */
+@media (max-width: 768px) {
+  .recipe-card {
+    flex-direction: column;
+    height: auto;
+    border-radius: 20px;
+  }
+
+  .recipe-image {
+    flex: none;
+    height: 250px;
+    padding: 0; /* Full width trên mobile */
+  }
+  
+  .recipe-image img {
+    border-radius: 0;
+  }
+
+  .recipe-content {
+    grid-template-columns: 1fr; /* Gom về 1 cột */
+    grid-template-areas: 
+      "title"
+      "meta"
+      "ingredients"
+      "instructions"
+      "badge";
+    padding: 25px;
+  }
+
+  .recipe-title {
+    font-size: 2rem;
+  }
+}

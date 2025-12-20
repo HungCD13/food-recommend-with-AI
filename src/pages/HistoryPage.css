@@ -1,0 +1,664 @@
+/* Import Font */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Poppins:wght@300;400;500;600&display=swap');
+
+:root {
+  --primary: #f43f5e; /* Màu hồng đỏ điểm nhấn */
+  --primary-hover: #e11d48;
+  --bg-dark: #0f172a; /* Nền trang tối */
+  --bg-card: #1e293b; /* Nền card */
+  --bg-panel: #1e293b; /* Nền thanh công cụ */
+  --text-main: #f8fafc;
+  --text-muted: #94a3b8;
+  --border-color: rgba(255, 255, 255, 0.1);
+  --radius-lg: 16px;
+  --radius-md: 12px;
+}
+
+/* --- CẤU TRÚC CHUNG --- */
+.history-page {
+  min-height: 100vh;
+  background-color: var(--bg-dark);
+  color: var(--text-main);
+  font-family: 'Poppins', sans-serif;
+  padding-bottom: 60px;
+}
+
+.history-header, .history-main {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* --- HEADER --- */
+.history-header {
+  padding-top: 40px;
+  padding-bottom: 20px;
+}
+
+.header-main {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 10px;
+}
+
+.history-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 2.8rem;
+  font-weight: 700;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  line-height: 1.2;
+}
+
+.title-icon {
+  color: var(--primary);
+}
+
+.history-subtitle {
+  color: var(--text-muted);
+  margin-top: 10px;
+  font-size: 1rem;
+}
+
+/* Thẻ thống kê số lượng */
+.stat-card {
+  background: white;
+  padding: 10px 24px;
+  border-radius: var(--radius-md);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+.stat-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  line-height: 1;
+}
+
+.stat-number {
+  color: #0f172a;
+  font-size: 1.8rem;
+  font-weight: 800;
+}
+
+.stat-label {
+  color: #64748b;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  margin-top: 4px;
+}
+
+/* --- FILTER SECTION (Thanh công cụ) --- */
+.filter-section {
+  background: var(--bg-panel);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  margin-bottom: 30px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+}
+
+/* Input Tìm kiếm */
+.search-container {
+  position: relative;
+  margin-bottom: 20px;
+}
+
+.search-icon {
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-muted);
+  pointer-events: none;
+}
+
+.search-input {
+  width: 100%;
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid var(--border-color);
+  padding: 14px 14px 14px 48px;
+  border-radius: 50px;
+  color: white;
+  font-size: 1rem;
+  transition: all 0.2s;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(244, 63, 94, 0.15);
+  background: #0f172a;
+}
+
+/* Hàng chứa Filter Tags và Actions */
+.filter-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap; /* Cho phép xuống dòng trên mobile */
+}
+
+/* Scroll Categories ngang */
+.category-scroll-container {
+  flex: 1;
+  overflow-x: auto;
+  padding-bottom: 4px; /* Tránh scrollbar dính sát */
+  scrollbar-width: none; /* Ẩn scrollbar Firefox */
+}
+.category-scroll-container::-webkit-scrollbar { display: none; }
+
+.category-tags {
+  display: flex;
+  gap: 10px;
+  white-space: nowrap;
+}
+
+.category-tag {
+  background: transparent;
+  border: 1px solid var(--border-color);
+  color: var(--text-muted);
+  padding: 8px 16px;
+  border-radius: 50px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s;
+}
+
+.category-tag:hover {
+  background: rgba(255,255,255,0.05);
+  color: white;
+}
+
+.category-tag.active {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: white;
+  box-shadow: 0 4px 12px rgba(244, 63, 94, 0.4);
+}
+
+/* Nhóm nút bên phải */
+.action-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.sort-control {
+  position: relative;
+}
+
+.sort-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: white;
+  pointer-events: none;
+}
+
+.sort-select {
+  appearance: none;
+  background: rgba(15, 23, 42, 0.8);
+  border: 1px solid var(--border-color);
+  color: white;
+  padding: 10px 16px 10px 36px;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  min-width: 140px;
+}
+.sort-select:focus { outline: none; border-color: var(--text-muted); }
+.sort-select option { background: #1e293b; }
+
+.control-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.control-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-weight: 500;
+  font-size: 0.9rem;
+  cursor: pointer;
+  white-space: nowrap; /* CHỐNG VỠ DÒNG */
+  border: 1px solid transparent;
+  transition: 0.2s;
+}
+
+.export-btn {
+  background: rgba(34, 197, 94, 0.1);
+  color: #4ade80;
+  border-color: rgba(34, 197, 94, 0.2);
+}
+.export-btn:hover { background: rgba(34, 197, 94, 0.2); }
+
+.delete-btn {
+  background: rgba(239, 68, 68, 0.1);
+  color: #f87171;
+  border-color: rgba(239, 68, 68, 0.2);
+}
+.delete-btn:hover { background: rgba(239, 68, 68, 0.2); }
+
+/* --- GRID MÓN ĂN --- */
+.recipes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 30px;
+  margin-top: 1rem;
+}
+
+/* ===== RECIPE CARD - CHUẨN LAYOUT 3/5 - 2/5 ===== */
+
+.recipes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); /* Card rộng tối thiểu 300px */
+  gap: 25px;
+  padding-bottom: 40px;
+}
+
+.recipe-card {
+  background: var(--bg-card); /* Nền tối */
+  border-radius: 20px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
+  cursor: pointer;
+  
+  /* --- QUAN TRỌNG: Thiết lập chiều cao và Flexbox --- */
+  height: 480px; /* Tăng chiều cao lên chút để thoáng */
+  display: flex; /* Dùng Flexbox thay vì flow-root */
+  flex-direction: column; /* Xếp dọc: Ảnh trên, Content dưới */
+  position: relative;
+}
+
+.recipe-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+  border-color: rgba(244, 63, 94, 0.5); /* Màu viền khi hover */
+}
+
+/* Checkbox (Giữ nguyên) */
+.card-checkbox {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  z-index: 20;
+  background: rgba(0, 0, 0, 0.6);
+  border-radius: 8px;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+.checkbox-input { width: 18px; height: 18px; cursor: pointer; accent-color: var(--primary); }
+
+/* --- PHẦN 1: ẢNH (Chiếm 60% chiều cao) --- */
+.card-image-container { /* Cần div bao quanh ảnh nếu JSX có */
+  flex: 6; /* 6 phần */
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+}
+/* Hoặc nếu JSX của bạn là trực tiếp thẻ div.recipe-image */
+.recipe-image, .card-image {
+  flex: 6; /* Chiếm 60% chiều cao card */
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  margin: 0; /* Reset margin */
+  padding: 0; /* Reset padding */
+}
+
+.recipe-img, .recipe-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Ảnh phủ kín khung */
+  transition: transform 0.6s ease;
+  display: block;
+}
+
+.recipe-card:hover .recipe-img, 
+.recipe-card:hover .recipe-image img {
+  transform: scale(1.08); /* Zoom nhẹ khi hover */
+}
+
+/* Overlay gradient trên ảnh để hiển thị Ngày tạo */
+.image-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(to top, rgba(15, 23, 42, 0.8) 0%, transparent 40%);
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end; /* Đưa ngày về góc phải dưới */
+  padding: 15px;
+  pointer-events: none;
+}
+
+.recipe-date {
+  background: rgba(0, 0, 0, 0.6);
+  color: #cbd5e1;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  backdrop-filter: blur(4px);
+}
+
+/* --- PHẦN 2: NỘI DUNG (Chiếm 40% chiều cao) --- */
+.card-content, .recipe-content {
+  flex: 4; /* Chiếm 40% chiều cao card */
+  background: var(--bg-card);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* Căn đều trên dưới */
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  position: relative; /* Để không bị overlay đè */
+  z-index: 2;
+}
+
+/* Tiêu đề món ăn */
+.recipe-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.25rem; /* Cỡ chữ vừa phải */
+  font-weight: 700;
+  color: white; /* Màu chữ trắng nổi bật */
+  margin: 0 0 10px 0;
+  line-height: 1.4;
+  
+  /* Cắt dòng nếu tên quá dài (tối đa 2 dòng) */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Thông tin Thời gian & Calo */
+.recipe-meta {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 15px;
+}
+
+.meta-item {
+  flex: 1; /* Chia đều 2 cột */
+  background: rgba(15, 23, 42, 0.6); /* Nền tối hơn card chút */
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+  padding: 8px 12px;
+  display: flex;
+  flex-direction: column; /* Icon trên, số dưới hoặc ngang tùy thích */
+  gap: 4px;
+}
+
+/* Dòng chứa Icon và Label */
+.meta-top {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  color: #94a3b8;
+}
+.meta-top svg { color: var(--primary); width: 14px; height: 14px; }
+
+/* Dòng chứa giá trị số */
+.meta-value {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: white;
+  padding-left: 2px;
+}
+
+/* --- NÚT HÀNH ĐỘNG (Xem chi tiết) --- */
+.recipe-actions {
+  margin-top: auto; /* Đẩy xuống đáy content */
+}
+
+.view-btn, .action-btn.view-btn {
+  width: 100%;
+  background: linear-gradient(90deg, #f43f5e 0%, #e11d48 100%); /* Gradient đỏ hồng */
+  color: white;
+  border: none;
+  padding: 10px;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.2s;
+  box-shadow: 0 4px 12px rgba(244, 63, 94, 0.3);
+}
+
+.view-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(244, 63, 94, 0.5);
+  filter: brightness(1.1);
+}
+
+/* Ẩn các nút Share/Delete nhỏ nếu muốn giao diện sạch */
+.action-btn.share-btn, .action-btn.delete-btn {
+  display: none; 
+}
+
+/* --- BULK ACTIONS (Thanh chọn nhiều) --- */
+.bulk-actions-bar {
+  background: rgba(244, 63, 94, 0.1);
+  border: 1px solid var(--primary);
+  padding: 12px 24px;
+  border-radius: 12px;
+  margin-bottom: 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  animation: slideDown 0.3s ease;
+}
+
+.selected-count {
+  color: var(--primary);
+  font-weight: 600;
+}
+
+.bulk-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.bulk-delete-btn {
+  background: var(--primary);
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 500;
+}
+.bulk-delete-btn:hover { background: var(--primary-hover); }
+
+.bulk-cancel-btn {
+  background: transparent;
+  color: var(--text-muted);
+  border: none;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+.bulk-cancel-btn:hover { text-decoration: underline; color: white; }
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* --- EMPTY STATE --- */
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  background: rgba(30, 41, 59, 0.3);
+  border: 2px dashed var(--border-color);
+  border-radius: 20px;
+}
+.empty-icon { font-size: 4rem; margin-bottom: 20px; opacity: 0.6; }
+.empty-title { font-size: 1.5rem; margin-bottom: 10px; }
+.empty-description { color: var(--text-muted); margin-bottom: 30px; }
+.create-recipe-btn {
+  background: linear-gradient(135deg, var(--primary) 0%, #ec4899 100%);
+  color: white;
+  border: none;
+  padding: 12px 30px;
+  border-radius: 50px;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 10px 20px rgba(244, 63, 94, 0.3);
+  transition: transform 0.2s;
+}
+.create-recipe-btn:hover { transform: translateY(-3px); }
+
+/* --- LOADING STATE --- */
+.history-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  gap: 1.5rem;
+}
+
+.loading-spinner {
+  width: 60px;
+  height: 60px;
+  border: 3px solid rgba(244, 63, 94, 0.1);
+  border-top-color: var(--primary);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+.history-loading p {
+  color: var(--text-secondary);
+  font-size: 1.125rem;
+  font-weight: 500;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* --- RESPONSIVE --- */
+@media (max-width: 1024px) {
+  .recipes-grid {
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+  }
+  
+  .recipe-card {
+    height: 380px;
+  }
+}
+
+@media (max-width: 768px) {
+  .header-main {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;
+  }
+  .stat-card { width: 100%; text-align: center; }
+  
+  .filter-controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .action-controls {
+    justify-content: space-between;
+  }
+  
+  .recipes-grid {
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 15px;
+  }
+  
+  .recipe-card {
+    height: 360px;
+  }
+  
+  .card-content {
+    padding: 15px;
+  }
+  
+  .recipe-title {
+    font-size: 1.2rem;
+    margin-bottom: 12px;
+  }
+  
+  .meta-row {
+    gap: 10px;
+  }
+  
+  .meta-item {
+    padding: 8px;
+  }
+  
+  .meta-label {
+    font-size: 0.7rem;
+  }
+  
+  .meta-value {
+    font-size: 0.9rem;
+  }
+  
+  .action-btn {
+    padding: 10px;
+    font-size: 0.95rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .recipes-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .recipe-card {
+    height: 340px;
+    max-width: 100%;
+  }
+  
+  .meta-row {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+  
+  .recipe-title {
+    font-size: 1.1rem;
+    -webkit-line-clamp: 2;
+  }
+}
