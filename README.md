@@ -1,16 +1,26 @@
-# React + Vite
+# 🍳 FoodGPT – Gợi ý món ăn từ nguyên liệu có sẵn
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## 🧠 Giới thiệu
 
-Currently, two official plugins are available:
+FoodGPT là một ứng dụng web sử dụng **GPT API** và **RAG (Retrieval-Augmented Generation)**  
+nhằm **gợi ý tên món ăn** phù hợp với **các nguyên liệu mà người dùng đang có**.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Người dùng chỉ cần nhập các nguyên liệu (ví dụ: “trứng, mì, hành lá”)  
+👉 Hệ thống sẽ đề xuất các món ăn khả thi, kèm mô tả và hướng dẫn nấu.
 
-## React Compiler
+---
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## 🏗️ Công nghệ sử dụng
 
-## Expanding the ESLint configuration
+### ⚙️ Backend:
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- **Node.js + Express** → Xây dựng API server
+- **OpenAI GPT API** → Xử lý ngôn ngữ tự nhiên (gợi ý món ăn)
+- **MongoDB ** → Lưu dữ liệu món ăn
+- **LangChain** → Quản lý quy trình truy xuất và sinh câu trả lời từ GPT
+
+### 💻 Frontend:
+
+- **React.js (Vite)** → Giao diện web hiện đại
+- **TailwindCSS** → Thiết kế nhanh, responsive
+- **Axios** → Gửi request đến API backend
