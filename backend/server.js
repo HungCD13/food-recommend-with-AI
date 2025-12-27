@@ -1,50 +1,77 @@
 import express from "express";
-import dotenv from "dotenv";
-import cors from "cors";
 import mongoose from "mongoose";
+import cors from "cors";
+import dotenv from "dotenv";
 
-// Routes
+// =============================
+// ROUTES
+// =============================
+import authRoutes from "./routes/authRoutes.js";
 import recipeRoutes from "./routes/recipeRoutes.js";
-import userRoutes from "./routes/userRoutes.js";
-import adminRoutes from "./routes/adminRoutes.js"; // nếu chưa làm thì tí tạo file rỗng
+import ingredientRoutes from "./routes/ingredientRoutes.js";
+import favoriteRoutes from "./routes/favoriteRoutes.js";
+import imageRoutes from "./routes/imageRoutes.js";
+import systemRoutes from "./routes/systemRoutes.js";
+import adminRoutes from "./routes/adminRoutes.js";
+import historyRoutes from './routes/historyRoutes.js';
 
+
+// =============================
+// CONFIG
+// =============================
 dotenv.config();
-
 const app = express();
-
-app.use(cors());
-app.use(express.json());
-
-
-app.get("/", (req, res) => {
-  res.send("🔥 Cook.io Backend is running smoothly!");
-});
-
-
-app.use("/api/recipes", recipeRoutes);
-app.use("/api/users", userRoutes);
-app.use("/api/admin", adminRoutes); 
-
-
-mongoose
-  .connect(process.env.MONGO_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
-  .then(() => console.log("✅ MongoDB Connected Successfully"))
-  .catch((err) => console.error("❌ MongoDB Connection Error:", err));
-
-
 const PORT = process.env.PORT || 5000;
 
-app.listen(PORT, () => {
-  console.log("\n==============================");
-  console.log("🚀 Cook.io Backend Started");
-  console.log(`🌐 URL: http://localhost:${PORT}`);
-  console.log(
-    `🔑 OpenAI Key: ${
-      process.env.OPENAI_API_KEY ? "Loaded ✔️" : "Missing ❌ (check .env)"
-    }`
-  );
-  console.log("==============================\n");
+// =============================
+// MIDDLEWARE
+// =============================
+app.use(cors());
+app.use(express.json({ limit: "10mb" }));
+app.use(express.urlencoded({ extended: true }));
+
+// =============================
+// API ROUTES
+// =============================
+app.use("/api/auth", authRoutes);
+app.use("/api/recipes", recipeRoutes);
+app.use("/api/ingredients", ingredientRoutes);
+app.use("/api/favorites", favoriteRoutes);
+app.use("/api/images", imageRoutes);
+app.use("/api/system", systemRoutes);
+app.use("/api/admin", adminRoutes);
+app.use('/api/history', historyRoutes);// =============================
+// ROOT TEST
+// =============================
+app.get("/", (req, res) => {
+  res.json({
+    message: "🍳 CookIO API is running!",
+    status: "OK",
+    version: "1.0.0",
+  });
 });
+
+// =============================
+// ERROR HANDLER
+// =============================
+app.use((err, req, res, next) => {
+  console.error("🔥 Server Error:", err);
+  res.status(500).json({
+    error: "Internal Server Error",
+  });
+});
+
+// =============================
+// DATABASE CONNECT
+// =============================
+mongoose
+  .connect(process.env.MONGO_URI)
+  .then(() => {
+    console.log("✅ MongoDB connected");
+    app.listen(PORT, () =>
+      console.log(`🚀 Server running on http://localhost:${PORT}`)
+    );
+  })
+  .catch((err) => {
+    console.error("❌ MongoDB connection failed:", err);
+  });

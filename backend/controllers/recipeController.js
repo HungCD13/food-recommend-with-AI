@@ -1,27 +1,11 @@
 import OpenAI from "openai";
 import dotenv from "dotenv";
-import fs from "fs";
 import jwt from "jsonwebtoken";
 import History from "../models/History.js";
+import Recipe from "../models/Recipe.js";
+
 
 dotenv.config();
-
-// =============================
-// LOG FILE
-// =============================
-function writeLog(ingredients, userPrompt, result, userId) {
-  const log = `[${new Date().toISOString()}]
-UserId: ${userId || "Chưa đăng nhập"}
-Ingredients: ${Array.isArray(ingredients) ? ingredients.join(", ") : ingredients}
-Prompt: ${userPrompt}
-Result: ${result}
-----------------------------------
-
-`;
-
-  if (!fs.existsSync("logs")) fs.mkdirSync("logs");
-  fs.appendFileSync("logs/gpt.log", log);
-}
 
 // =============================
 // OPENAI CLIENT
@@ -30,25 +14,60 @@ const client = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
-// Parse JSON an toàn
-function safeJson(text) {
-  try {
-    return JSON.parse(text);
-  } catch {
-    return null;
-  }
-}
-
 // =============================
-// API: RECOMMEND FOOD
+// RECOMMEND FOOD (AI CORE)
 // =============================
 export const recommendFood = async (req, res) => {
   try {
-    let { ingredients, prompt } = req.body;
+    const { ingredients } = req.body;
 
-    // ========================
-    // Xử lý JWT
-    // ========================
+    // =============================
+    // VALIDATE INPUT
+    // =============================
+    let ingList = [];
+
+if (!req.body.ingredients) {
+  return res.status(400).json({
+    error: "Vui lòng nhập nguyên liệu",
+  });
+}
+
+// Nếu frontend gửi STRING: "egg, milk"
+if (typeof req.body.ingredients === "string") {
+  if (req.body.ingredients.trim() === "") {
+    return res.status(400).json({
+      error: "Vui lòng nhập nguyên liệu",
+    });
+  }
+
+  ingList = req.body.ingredients
+    .split(",")
+    .map((i) => i.trim())
+    .filter(Boolean);
+}
+
+// Nếu frontend gửi ARRAY: ["egg", "milk"]
+else if (Array.isArray(req.body.ingredients)) {
+  if (req.body.ingredients.length === 0) {
+    return res.status(400).json({
+      error: "Vui lòng nhập nguyên liệu",
+    });
+  }
+
+  ingList = req.body.ingredients
+    .map((i) => i.trim())
+    .filter(Boolean);
+}
+
+// Trường hợp khác → sai format
+else {
+  return res.status(400).json({
+    error: "Định dạng nguyên liệu không hợp lệ",
+  });
+}
+    // =============================
+    // GET USER ID FROM JWT (OPTIONAL)
+    // =============================
     let userId = null;
     try {
       const token = req.headers.authorization?.split(" ")[1];
@@ -56,102 +75,237 @@ export const recommendFood = async (req, res) => {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
         userId = decoded.id;
       }
-    } catch {
+    } catch (err) {
       userId = null;
     }
 
-    // ========================
-    // Validate ingredients
-    // ========================
-    if (!ingredients) {
-      return res.status(400).json({ error: "Thiếu nguyên liệu!" });
-    }
+    // =============================
+    // PROMPT – JSON OUTPUT
+    // =============================
+   const prompt = `
+Bạn là một đầu bếp chuyên nghiệp.
 
-    // CHUYỂN input string → array
-    const ingList = Array.isArray(ingredients)
-      ? ingredients
-      : ingredients
-          .split(",")
-          .map((i) => i.trim())
-          .filter(Boolean);
+Danh sách người dùng nhập:
+${ingList.join(", ")}
 
-    if (!prompt || prompt.trim() === "") {
-      return res.status(400).json({ error: "Thiếu prompt!" });
-    }
+Nhiệm vụ của bạn:
 
-    // ========================
-    // GPT Prompt
-    // ========================
-    const finalPrompt = `
-Nguyên liệu: ${ingList.join(", ")}
-Yêu cầu: ${prompt}
+1️.Nếu danh sách trên KHÔNG chứa nguyên liệu nấu ăn hợp lệ
+(ví dụ: "abc", "123", "hello", "facebook", "???")
+→ Trả về JSON SAU:
 
-Hãy trả lời NGẮN GỌN:
-- Tên món
-- Nguyên liệu cần
-- Cách làm ngắn
+{
+  "error": "Không nhận diện được nguyên liệu hợp lệ. Vui lòng nhập nguyên liệu nấu ăn."
+}
 
-Trả lời không lan man.
-    `;
+2. Nếu danh sách CÓ nguyên liệu hợp lệ
+→ Trả về đúng JSON với cấu trúc:
 
-    let resultText = "GPT lỗi, thử lại";
+{
+  "title": "Tên món ăn",
+  "ingredients": ["...", "..."],
+  "instructions": ["Bước 1", "Bước 2", "..."],
+  "time": "number (phút)",
+  "calories": "number (kcal)"
+}
+Lưu ý: với time, calories là chuỗi rỗng nếu bạn không biết bạn hãy ước lượng chính xác.
+❗ Chỉ trả về JSON hợp lệ
+`;
 
-    // ========================
-    // CALL GPT
-    // ========================
+    // =============================
+    // CALL OPENAI
+    // =============================
+    let aiResult;
     try {
-      const response = await client.responses.create({
-        model: "gpt-4.1-mini",
-        input: finalPrompt,
+      const response = await client.chat.completions.create({
+        model: "gpt-4o-mini",
+        messages: [{ role: "user", content: prompt }],
+        response_format: { type: "json_object" },
+        max_tokens: 300,
       });
 
-      resultText =
-        response.output_text ||
-        response.output?.[0]?.content?.[0]?.text?.value ||
-        "Không đọc được output từ GPT.";
+      aiResult = JSON.parse(response.choices[0].message.content);
     } catch (err) {
-      console.error("GPT ERROR:", err);
-    }
-
-    // ========================
-    // SAVE MONGODB
-    // ========================
-    try {
-      await History.create({
-        userId,
-        ingredients: ingList,
-        prompt,
-        result: resultText,
+      console.error("OPENAI ERROR:", err);
+      return res.status(500).json({
+        error: "Chef AI đang bận, thử lại sau nhé!",
       });
-    } catch (err) {
-      console.error("MongoDB error:", err);
     }
 
-    // LOG FILE
-    writeLog(ingList, prompt, resultText, userId);
+    // =============================
+    // ADD IMAGE (FREE – UNSPLASH)
+    // =============================
+    aiResult.image = `https://source.unsplash.com/900x900/?food,${encodeURIComponent(
+      aiResult.title
+    )}`;
 
-    return res.json({ result: resultText });
-  } catch (error) {
-    console.error("Server error:", error);
-    return res.status(500).json({ error: "Lỗi server!" });
-  }
-};
+      // =============================
+      // SAVE HISTORY
+      // =============================
+      try {
+        await History.create({
+          userId: req.user.id, // từ verifyToken
+          title: aiResult.title,
+          ingredients: aiResult.ingredients,
+          instructions: aiResult.instructions,
+          time: aiResult.time,
+          calories: aiResult.calories,
+          image: aiResult.image,
+          rawIngredients: ingList,
+        });
+      } catch (err) {
+        console.error("MONGO SAVE ERROR:", err);
+      }
+
+      // =============================
+      // RETURN TO FRONTEND
+      // =============================
+      return res.json(aiResult);
+    } catch (err) {
+      console.error("SERVER ERROR:", err);
+      return res.status(500).json({
+        error: "Lỗi server",
+      });
+    }
+  };
+
+  // =============================
+  // GET RECIPE HISTORY
+  // =============================
+  export const getHistory = async (req, res) => {
+    try {
+      const userId = req.user.id; // lấy từ token
+
+      const history = await History.find({ userId })
+        .sort({ createdAt: -1 })
+        .limit(50);
+
+      return res.json(history);
+    } catch (err) {
+      console.error("GET HISTORY ERROR:", err);
+      return res.status(500).json({
+        error: "Không lấy được lịch sử",
+      });
+    }
+  };
+
 
 // =============================
-// API: GET HISTORY
+// ❤️ SAVE RECIPE
 // =============================
-export const getHistory = async (req, res) => {
+export const saveRecipe = async (req, res) => {
   try {
-    const userId = req.params.id;
+    const userId = req.user.id;
+    const {
+      title,
+      ingredients,
+      instructions,
+      image,
+      time,
+      calories,
+    } = req.body;
 
-    // Nếu không có user → trả toàn bộ lịch sử
-    const query = userId ? { userId } : {};
+    if (!title || !ingredients || !instructions) {
+      return res.status(400).json({
+        message: "Thiếu thông tin công thức",
+      });
+    }
 
-    const history = await History.find(query).sort({ createdAt: -1 });
+    const exists = await Recipe.findOne({
+      userId,
+      title,
+    });
 
-    res.json({ history });
+    if (exists) {
+      return res.status(400).json({
+        message: "Công thức đã được lưu trước đó",
+      });
+    }
+
+    const recipe = await Recipe.create({
+      userId,
+      title,
+      ingredients,
+      instructions,
+      image,
+      time,
+      calories,
+      generatedByAI: true,
+      createdBy: userId,
+    });
+
+    return res.status(201).json({
+      message: "Lưu công thức thành công ❤️",
+      recipe,
+    });
   } catch (err) {
-    console.error("History Error:", err);
-    res.status(500).json({ error: "Lỗi server!" });
+    console.error("SAVE RECIPE ERROR:", err);
+    return res.status(500).json({
+      message: "Lỗi server khi lưu công thức",
+    });
   }
 };
+
+
+// =============================
+// 📚 GET SAVED RECIPES
+// =============================
+export const getSavedRecipes = async (req, res) => {
+  try {
+    const userId = req.user.id; // từ verifyToken
+
+    const recipes = await Recipe.find({ userId })
+      .sort({ createdAt: -1 })
+      .select(
+        "title image time calories ingredients instructions createdAt"
+      );
+
+    return res.json(recipes);
+  } catch (error) {
+    console.error("GET SAVED RECIPES ERROR:", error);
+    return res.status(500).json({
+      message: "Không lấy được danh sách món đã lưu",
+    });
+  }
+};
+
+// =============================
+// ❌ DELETE SAVED RECIPE
+// =============================
+export const deleteSavedRecipe = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const { recipeId } = req.params;
+
+    const deletedRecipe = await Recipe.findOneAndDelete({
+      _id: recipeId,
+      userId,
+    });
+
+    if (!deletedRecipe) {
+      return res.status(404).json({
+        message: "Không tìm thấy công thức để xoá",
+      });
+    }
+
+    return res.json({
+      message: "Xoá công thức đã lưu thành công ❌",
+    });
+  } catch (error) {
+    console.error("DELETE SAVED RECIPE ERROR:", error);
+    return res.status(500).json({
+      message: "Lỗi server khi xoá công thức",
+    });
+  }
+};
+
+// =============================
+// 🖼️ GENERATE RECIPE IMAGE (OPTIONAL)
+// =============================
+export const generateRecipeImage = async (req, res) => {
+  return res.json({
+    image:
+      "https://source.unsplash.com/900x900/?food,dish",
+  });
+};
+

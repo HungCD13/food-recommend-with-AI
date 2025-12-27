@@ -524,66 +524,6 @@
             color: var(--primary);
         }
 
-        /* --- CHAT SECTION --- */
-        .chat-section {
-            max-width: 900px;
-            margin: 40px auto 0;
-            background: var(--white);
-            border-radius: 20px;
-            padding: 30px;
-            box-shadow: var(--shadow-light);
-            display: none;
-            /* Hidden initially */
-        }
-
-        .chat-history {
-            max-height: 300px;
-            overflow-y: auto;
-            margin-bottom: 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        .chat-message {
-            padding: 10px 15px;
-            border-radius: 15px;
-            max-width: 80%;
-            font-size: 0.95rem;
-        }
-
-        .chat-message.user {
-            background: var(--primary);
-            color: white;
-            align-self: flex-end;
-            border-bottom-right-radius: 2px;
-        }
-
-        .chat-message.ai {
-            background: #f1f1f1;
-            color: var(--dark);
-            align-self: flex-start;
-            border-bottom-left-radius: 2px;
-        }
-
-        .chat-input-group {
-            display: flex;
-            gap: 10px;
-        }
-
-        .chat-input {
-            flex: 1;
-            padding: 12px;
-            border: 2px solid #eee;
-            border-radius: 50px;
-            outline: none;
-            transition: var(--transition);
-        }
-
-        .chat-input:focus {
-            border-color: var(--primary);
-        }
-
         /* --- ANIMATIONS --- */
         @keyframes fadeInUp {
             from {
@@ -709,20 +649,6 @@
                 <!-- Content injected via JS -->
             </div>
 
-            <!-- Chef Chat Section (New) -->
-            <div id="chat-interface" class="chat-section">
-                <h3 style="margin-bottom: 15px;"><i class="fas fa-comments"></i> Ask Chef Gemini ✨</h3>
-                <div id="chat-history" class="chat-history">
-                    <div class="chat-message ai">Hello! I generated this recipe for you. Do you have any questions about
-                        substitutions or steps?</div>
-                </div>
-                <div class="chat-input-group">
-                    <input type="text" id="chat-input" class="chat-input"
-                        placeholder="Ask about wine pairings, sides, or tips...">
-                    <button id="chat-send" class="btn btn-primary"><i class="fas fa-paper-plane"></i></button>
-                </div>
-            </div>
-
         </div>
     </main>
 
@@ -743,7 +669,7 @@
             <div class="logo" style="justify-content: center; margin-bottom: 20px;">
                 <i class="fas fa-utensils"></i> Cook.io
             </div>
-            <p>Powered by Google Gemini & Imagen</p>
+            <p>Powered by Mock GPT Architecture</p>
             <div class="footer-links">
                 <a href="#"><i class="fab fa-instagram"></i></a>
                 <a href="#"><i class="fab fa-twitter"></i></a>
@@ -755,13 +681,61 @@
 
     <!-- JAVASCRIPT LOGIC -->
     <script>
-        // --- CONFIGURATION ---
-        const apiKey = ""; // API Key injected by environment
+        // --- DATA & MOCK API ---
+
+        // Mock Database of "AI Generated" Recipes
+        const mockRecipes = [
+            {
+                id: 1,
+                title: "Rustic Roasted Chicken & Lemon",
+                time: "45 mins",
+                calories: "450 kcal",
+                image: "https://images.unsplash.com/photo-1598103442097-8b74394b95c6?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
+                ingredients: ["2 Chicken Breasts", "2 Lemons", "4 Cloves Garlic", "Fresh Thyme", "Olive Oil", "Salt & Pepper"],
+                instructions: [
+                    "Preheat oven to 400°F (200°C).",
+                    "Place chicken in a baking dish. Drizzle with olive oil.",
+                    "Slice lemons and arrange around chicken along with garlic cloves.",
+                    "Sprinkle generous amounts of thyme, salt, and pepper.",
+                    "Bake for 35-40 minutes until golden brown.",
+                    "Let rest for 5 minutes before serving."
+                ]
+            },
+            {
+                id: 2,
+                title: "Creamy Tomato Basil Pasta",
+                time: "20 mins",
+                calories: "320 kcal",
+                image: "https://images.unsplash.com/photo-1626844131082-256783844137?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
+                ingredients: ["200g Pasta", "1 cup Tomato Sauce", "1/2 cup Heavy Cream", "Fresh Basil", "Parmesan Cheese", "Garlic"],
+                instructions: [
+                    "Boil pasta in salted water until al dente.",
+                    "In a pan, sauté minced garlic in olive oil.",
+                    "Add tomato sauce and simmer for 5 minutes.",
+                    "Stir in heavy cream and fresh basil.",
+                    "Toss pasta in the sauce and top with parmesan."
+                ]
+            },
+            {
+                id: 3,
+                title: "Avocado & Egg Breakfast Toast",
+                time: "10 mins",
+                calories: "280 kcal",
+                image: "https://images.unsplash.com/photo-1525351484163-7529414395d8?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
+                ingredients: ["2 Slices Sourdough Bread", "1 Ripe Avocado", "2 Eggs", "Chili Flakes", "Lemon Juice", "Salt"],
+                instructions: [
+                    "Toast the sourdough bread until crispy.",
+                    "Mash avocado with lemon juice and salt.",
+                    "Fry or poach eggs to your liking.",
+                    "Spread avocado on toast, top with egg.",
+                    "Sprinkle chili flakes for a kick."
+                ]
+            }
+        ];
 
         // --- STATE MANAGEMENT ---
         let currentRecipe = null;
         let savedRecipes = JSON.parse(localStorage.getItem('cookio_saved')) || [];
-        let isGenerating = false;
 
         // --- DOM ELEMENTS ---
         const input = document.getElementById('ingredients');
@@ -773,286 +747,89 @@
         const errorMsg = document.getElementById('error-msg');
         const savedGrid = document.getElementById('saved-grid');
         const navbar = document.getElementById('navbar');
-        const chatInterface = document.getElementById('chat-interface');
-        const chatHistory = document.getElementById('chat-history');
-        const chatInput = document.getElementById('chat-input');
-        const chatSend = document.getElementById('chat-send');
 
         // --- EVENT LISTENERS ---
+
+        // Sticky Navbar effect
         window.addEventListener('scroll', () => {
-            if (window.scrollY > 50) navbar.classList.add('scrolled');
-            else navbar.classList.remove('scrolled');
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
         });
 
-        generateBtn.addEventListener('click', () => handleGenerate(false));
+        generateBtn.addEventListener('click', handleGenerate);
 
+        // Allow "Enter" key to submit
         input.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') handleGenerate(false);
+            if (e.key === 'Enter') handleGenerate();
         });
 
         surpriseBtn.addEventListener('click', () => {
-            const randomIngredients = ["Something spicy", "Vegetarian dinner", "Sweet dessert", "Healthy breakfast"];
-            const randomPick = randomIngredients[Math.floor(Math.random() * randomIngredients.length)];
-            input.value = randomPick;
-            handleGenerate(false);
+            const randomIngredients = ["Mystery Meat", "Dragon Fruit", "Stardust"];
+            input.value = "Surprise Me!";
+            handleGenerate(true); // pass true for random
         });
 
         clearBtn.addEventListener('click', () => {
             input.value = '';
             resultContainer.style.display = 'none';
-            chatInterface.style.display = 'none';
             errorMsg.style.display = 'none';
             currentRecipe = null;
         });
 
-        chatSend.addEventListener('click', sendChatMessage);
-        chatInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') sendChatMessage();
-        });
-
-        // --- CORE FUNCTIONS ---
+        // --- FUNCTIONS ---
 
         async function handleGenerate(isRandom = false) {
             const query = input.value.trim();
-            if (!query) {
+
+            // Validation (unless it's random/surprise)
+            if (!query && !isRandom) {
                 errorMsg.style.display = 'block';
                 shakeInput();
                 return;
             }
-
-            if (isGenerating) return;
-            isGenerating = true;
-
             errorMsg.style.display = 'none';
             resultContainer.style.display = 'none';
-            chatInterface.style.display = 'none';
+
+            // Show Loader
             loader.style.display = 'flex';
-            generateBtn.disabled = true;
 
-            try {
-                // 1. Generate Recipe Text with Gemini Flash
-                const recipePrompt = `You are a professional chef. Create a detailed, unique recipe using these ingredients or theme: "${query}". 
-                Return ONLY raw JSON (no markdown formatting, no backticks) with this exact structure: 
-                { "title": "string", "time": "string (e.g. 30 mins)", "calories": "string (e.g. 500 kcal)", "ingredients": ["string"], "instructions": ["string"], "imagePrompt": "string (visual description of the dish for an AI image generator)" }`;
+            // Simulate API Delay
+            await new Promise(resolve => setTimeout(resolve, 2000));
 
-                const recipeData = await callGeminiText(recipePrompt, true); // true = expects JSON
+            // Hide Loader
+            loader.style.display = 'none';
 
-                // 2. Generate Image with Imagen 4 (concurrently if possible, but we need the prompt first)
-                updateLoaderText("Plating up your dish...");
-                const imageUrl = await callImagen(recipeData.imagePrompt || `Delicious ${recipeData.title} food photography`);
-
-                currentRecipe = {
-                    id: Date.now(),
-                    ...recipeData,
-                    image: imageUrl
-                };
-
-                renderRecipeCard(currentRecipe);
-                scrollToResult();
-
-                // Reset Chat
-                chatHistory.innerHTML = '<div class="chat-message ai">Hello! I generated this recipe for you. Do you have any questions about substitutions or steps?</div>';
-                chatInterface.style.display = 'block';
-
-            } catch (error) {
-                console.error(error);
-                alert("Chef AI got a bit confused. Please try again!");
-            } finally {
-                loader.style.display = 'none';
-                generateBtn.disabled = false;
-                isGenerating = false;
-                updateLoaderText("Chef AI is thinking...");
-            }
-        }
-
-        async function sendChatMessage() {
-            const msg = chatInput.value.trim();
-            if (!msg || !currentRecipe) return;
-
-            // Add user message
-            addChatBubble(msg, 'user');
-            chatInput.value = '';
-
-            // Loading bubble
-            const loadingId = addChatBubble("Thinking...", 'ai');
-
-            try {
-                const context = `I am currently looking at a recipe for ${currentRecipe.title}. Ingredients: ${currentRecipe.ingredients.join(', ')}.`;
-                const prompt = `${context} User asks: "${msg}". Keep answer concise and helpful.`;
-
-                const response = await callGeminiText(prompt, false);
-
-                // Remove loading, add real response
-                document.getElementById(loadingId).remove();
-                addChatBubble(response, 'ai');
-            } catch (err) {
-                document.getElementById(loadingId).innerText = "Sorry, I couldn't answer that.";
-            }
-        }
-
-        // --- API HELPERS ---
-
-        async function callGeminiText(prompt, isJson = false) {
-            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
-
-            const payload = {
-                contents: [{ parts: [{ text: prompt }] }]
-            };
-
-            if (isJson) {
-                payload.generationConfig = { responseMimeType: "application/json" };
-            }
-
-            const response = await fetch(url, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-            });
-
-            if (!response.ok) throw new Error("Gemini API Error");
-
-            const data = await response.json();
-            const text = data.candidates[0].content.parts[0].text;
-
-            return isJson ? JSON.parse(text) : text;
-        }
-
-        async function callImagen(prompt) {
-            const url = `https://generativelanguage.googleapis.com/v1beta/models/imagen-4.0-generate-001:predict?key=${apiKey}`;
-            const payload = {
-                instances: [{ prompt: prompt + ", high quality food photography, 4k, delicious, photorealistic" }],
-                parameters: { sampleCount: 1 }
-            };
-
-            const response = await fetch(url, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-            });
-
-            if (!response.ok) {
-                console.warn("Imagen failed, using fallback");
-                return "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=800&q=80";
-            }
-
-            const data = await response.json();
-            return `data:image/png;base64,${data.predictions[0].bytesBase64Encoded}`;
-        }
-
-        async function generateTTS(text) {
-            const btn = document.getElementById('tts-btn');
-            const icon = btn.querySelector('i');
-            const originalIcon = icon.className;
-
-            try {
-                icon.className = "fas fa-spinner fa-spin";
-
-                const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent?key=${apiKey}`;
-                const payload = {
-                    contents: [{ parts: [{ text: text }] }],
-                    generationConfig: {
-                        responseModalities: ["AUDIO"],
-                        speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: "Aoede" } } }
-                    }
-                };
-
-                const response = await fetch(url, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-
-                const data = await response.json();
-                const base64Audio = data.candidates[0].content.parts[0].inlineData.data;
-
-                // Decode Base64 to ArrayBuffer
-                const binaryString = window.atob(base64Audio);
-                const len = binaryString.length;
-                const bytes = new Uint8Array(len);
-                for (let i = 0; i < len; i++) {
-                    bytes[i] = binaryString.charCodeAt(i);
+            // Select Mock Logic
+            // In a real app, this would be: fetch('https://api.openai.com/v1/...', { ... })
+            if (isRandom) {
+                currentRecipe = mockRecipes[Math.floor(Math.random() * mockRecipes.length)];
+            } else {
+                // Simple keyword matching for demo, defaulting to chicken if no match
+                if (query.toLowerCase().includes('pasta') || query.toLowerCase().includes('cheese')) {
+                    currentRecipe = mockRecipes[1];
+                } else if (query.toLowerCase().includes('egg') || query.toLowerCase().includes('bread')) {
+                    currentRecipe = mockRecipes[2];
+                } else {
+                    currentRecipe = mockRecipes[0];
                 }
-
-                // Convert PCM to WAV
-                const wavBytes = pcmToWav(bytes.buffer, 24000); // Gemini TTS is usually 24kHz
-                const blob = new Blob([wavBytes], { type: 'audio/wav' });
-                const audioUrl = URL.createObjectURL(blob);
-
-                const audio = new Audio(audioUrl);
-                audio.play();
-
-                icon.className = "fas fa-volume-up";
-
-            } catch (e) {
-                console.error("TTS Error", e);
-                alert("Could not generate audio.");
-                icon.className = originalIcon;
-            } finally {
-                setTimeout(() => icon.className = "fas fa-volume-up", 2000);
             }
+
+            // Render Result
+            renderRecipeCard(currentRecipe);
+            scrollToResult();
         }
-
-        // --- PCM TO WAV UTILITY ---
-        function pcmToWav(pcmData, sampleRate) {
-            const numChannels = 1;
-            const byteRate = sampleRate * numChannels * 2;
-            const blockAlign = numChannels * 2;
-            const dataSize = pcmData.byteLength;
-            const buffer = new ArrayBuffer(44 + dataSize);
-            const view = new DataView(buffer);
-
-            // RIFF chunk
-            writeString(view, 0, 'RIFF');
-            view.setUint32(4, 36 + dataSize, true);
-            writeString(view, 8, 'WAVE');
-
-            // fmt sub-chunk
-            writeString(view, 12, 'fmt ');
-            view.setUint32(16, 16, true);
-            view.setUint16(20, 1, true); // PCM format
-            view.setUint16(22, numChannels, true);
-            view.setUint32(24, sampleRate, true);
-            view.setUint32(28, byteRate, true);
-            view.setUint16(32, blockAlign, true);
-            view.setUint16(34, 16, true); // bits per sample
-
-            // data sub-chunk
-            writeString(view, 36, 'data');
-            view.setUint32(40, dataSize, true);
-
-            // Write PCM data
-            const pcmBytes = new Uint8Array(pcmData);
-            const wavBytes = new Uint8Array(buffer, 44);
-            wavBytes.set(pcmBytes);
-
-            return buffer;
-        }
-
-        function writeString(view, offset, string) {
-            for (let i = 0; i < string.length; i++) {
-                view.setUint8(offset + i, string.charCodeAt(i));
-            }
-        }
-
-        // --- RENDERING UI ---
 
         function renderRecipeCard(recipe) {
             const isSaved = savedRecipes.some(r => r.id === recipe.id);
             const heartClass = isSaved ? 'fas' : 'far';
             const savedClass = isSaved ? 'saved' : '';
 
-            // Prepare text for TTS
-            const ttsText = `Here is the recipe for ${recipe.title}. Ingredients: ${recipe.ingredients.join(', ')}. Instructions: ${recipe.instructions.join('. ')}`;
-            // Escape quotes for the onclick handler
-            const safeTTSText = ttsText.replace(/'/g, "\\'").replace(/"/g, '&quot;');
-
             const html = `
                 <div class="recipe-card">
-                    <div class="recipe-img" style="background-image: url('${recipe.image}')">
-                        <div style="position:absolute; bottom:10px; right:10px; background:rgba(0,0,0,0.5); color:white; padding:5px 10px; border-radius:10px; font-size:0.7rem;">
-                            <i class="fas fa-magic"></i> AI Generated Image
-                        </div>
-                    </div>
+                    <div class="recipe-img" style="background-image: url('${recipe.image}')"></div>
                     <div class="recipe-details">
                         <div class="recipe-header">
                             <div>
@@ -1062,14 +839,9 @@
                                     <div class="meta-item"><i class="fas fa-fire"></i> ${recipe.calories}</div>
                                 </div>
                             </div>
-                            <div style="display:flex; gap:10px;">
-                                <button onclick="generateTTS('${safeTTSText}')" class="save-btn" id="tts-btn" title="Listen to Recipe">
-                                    <i class="fas fa-volume-up"></i>
-                                </button>
-                                <button onclick="toggleSave(${recipe.id})" class="save-btn ${savedClass}" id="saveBtn-${recipe.id}">
-                                    <i class="${heartClass} fa-heart"></i>
-                                </button>
-                            </div>
+                            <button onclick="toggleSave(${recipe.id})" class="save-btn ${savedClass}" id="saveBtn-${recipe.id}">
+                                <i class="${heartClass} fa-heart"></i>
+                            </button>
                         </div>
                         
                         <div class="recipe-body">
@@ -1091,39 +863,30 @@
             resultContainer.style.display = 'block';
         }
 
-        function addChatBubble(text, type) {
-            const id = 'msg-' + Date.now();
-            const div = document.createElement('div');
-            div.id = id;
-            div.className = `chat-message ${type}`;
-            div.innerText = text;
-            chatHistory.appendChild(div);
-            chatHistory.scrollTop = chatHistory.scrollHeight;
-            return id;
-        }
-
-        function updateLoaderText(text) {
-            const h3 = loader.querySelector('h3');
-            if (h3) h3.innerText = text;
-        }
-
         function toggleSave(id) {
-            const recipeToSave = currentRecipe;
+            // Check if looking at current result or doing a logic check
+            const recipeToSave = currentRecipe; // Simply grabbing the current one
+
             const index = savedRecipes.findIndex(r => r.id === id);
             const btn = document.getElementById(`saveBtn-${id}`);
             const icon = btn.querySelector('i');
 
             if (index === -1) {
+                // Add to saved
                 savedRecipes.push(recipeToSave);
                 btn.classList.add('saved');
                 icon.classList.remove('far');
                 icon.classList.add('fas');
+                // Optional: Sound effect
+                playSound();
             } else {
+                // Remove
                 savedRecipes.splice(index, 1);
                 btn.classList.remove('saved');
                 icon.classList.remove('fas');
                 icon.classList.add('far');
             }
+
             updateLocalStorage();
             renderSavedList();
         }
@@ -1132,6 +895,8 @@
             savedRecipes = savedRecipes.filter(r => r.id !== id);
             updateLocalStorage();
             renderSavedList();
+
+            // If the currently displayed recipe is the one we just deleted, update its heart icon
             if (currentRecipe && currentRecipe.id === id) {
                 const mainBtn = document.getElementById(`saveBtn-${id}`);
                 if (mainBtn) {
@@ -1164,6 +929,7 @@
             `).join('');
         }
 
+        // --- UTILS ---
         function shakeInput() {
             input.style.borderColor = 'var(--primary)';
             input.style.animation = 'shake 0.5s';
@@ -1173,7 +939,16 @@
         }
 
         function scrollToResult() {
+            // Smooth scroll to result
             resultContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        function playSound() {
+            // Simple pop sound using AudioContext or Audio element
+            // Note: Browsers may block this without interaction, but since it's triggered by click it should work.
+            const audio = new Audio("data:audio/wav;base64,UklGRl9vT19XQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YU"); // Empty placeholder
+            // For a real app, use a real file. To keep this code file-contained, we skip a binary blob.
+            // Using visual feedback primarily.
         }
 
         // Add shake keyframes dynamically
@@ -1189,7 +964,7 @@
         `;
         document.head.appendChild(styleSheet);
 
-        // Initial Render
+        // Initial Render of saved items
         renderSavedList();
 
     </script>
